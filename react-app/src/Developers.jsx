@@ -1,17 +1,18 @@
-import "./Developers.css";
+import { FaGithub } from "react-icons/fa";
+import './Developers.css';
+import UserCard from "./UserCard";
 export default function Developers() {
     return (
         <>
            
             <div className="devs-header">
-                <img src="./assets/react.svg"  />
-                <h1 className="devs-header-title">Developers</h1>
+                <FaGithub />
+                <div className="devs-header-title">Developers</div>
             </div>
-            <h2>Your next collaborator could be right here.</h2>
+            <div>Your next collaborator could be right here.</div>
             <div className="users-section">
-
+                <UserCard />
             </div>
-
         </>
     );
 }

@@ -1,6 +1,8 @@
-devs-header{
-    flex-direction: column;
+.devs-header{
+    display: flex;;
+    flex-direction: row;
 }
-devs-header-title{
-    font: bold;
+.devs-header-title{
+    font-weight: bold;
+    font-size: 20px;
 }
