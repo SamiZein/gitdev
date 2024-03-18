@@ -8,7 +8,7 @@ function App() {
   return (
     <main>
       <BrowserRouter>
-        <NavBar/>
+        <NavBar />
         <div className="routes">
           <Routes>
             <Route path="/" element={<Developers />}/>
