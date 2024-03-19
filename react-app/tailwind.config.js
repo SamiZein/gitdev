@@ -10,7 +10,7 @@ export default {
         'dark-bg': '#0d1117',
         'dark-bg-secondary': '#161b22',
 
-        'dark-text-primary': '#c9d1d9',
+        'dark-text': '#c9d1d9',
         'dark-text-secondary': '#8b949e',
 
         'dark-accent': '#58a6ff',
