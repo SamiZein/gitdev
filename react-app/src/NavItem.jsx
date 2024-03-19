@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom"
 
-export default function NavItem({text,route}) {
+export default function NavItem({ icon: Icon, text,route}) {
     return(
         <li>
             <NavLink to={route}>
-                <div className='nav-text'>{text}</div>
+                {Icon && <Icon className="mr-2" />}
+                {text}
             </NavLink>
         </li>
     );
