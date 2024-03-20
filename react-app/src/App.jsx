@@ -6,7 +6,7 @@ import Collabs from './Collabs.jsx';
 
 function App() {
   return (
-    <main className="text-white bg-dark-bg-secondary">
+    <main className="h-screen text-white bg-dark-bg-secondary">
       <BrowserRouter>
         
         <NavBar />

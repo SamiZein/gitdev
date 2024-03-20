@@ -5,6 +5,20 @@ export default function Developers() {
     const skillsRequired = ["Backend"]
     const skillsPreferred = ["Go"]
 
+    useEffect(() => {
+        // Define a function to fetch data
+        async function fetchData() {
+          try {
+            const response = await fetch('https://api.example.com/data');
+            const jsonData = await response.json();
+            setData(jsonData);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        }
+        fetchData();
+      }, []);
+
     return (
         <>
             <div 
