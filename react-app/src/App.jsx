@@ -3,6 +3,7 @@ import NavBar from './NavBar.jsx'
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
 import Settings from './Settings.jsx';
 import Collabs from './Collabs.jsx';
+import GitHubLoginBtn from './GithubLoginBtn.jsx';
 
 function App() {
   return (
@@ -13,10 +14,11 @@ function App() {
         <div className="routes">
           <Routes>
             <Route path="/" element={<Developers />}/>
-            <Route path='/collabs' element={<Collabs />}/>
-            <Route path='/settings' element={<Settings />}/>
+            <Route path="/collabs" element={<Collabs />}/>
+            <Route path="/settings" element={<Settings />}/>
           </Routes>
         </div>
+        <GitHubLoginBtn />
       </BrowserRouter>
     </main>
   )

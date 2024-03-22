@@ -7,8 +7,7 @@ import { GoGear } from "react-icons/go";
 export default function NavBar() {
     return(
         <div className="bg-dark-bg">
-            <div >gitdev</div>
-            
+            <div >GitDev</div>
             <nav className="font-bold">
                 <ul className="flex flex-row px-4 py-3 space-x-4">
                     <NavItem icon={TbHammer} text="Developers" route="/" />

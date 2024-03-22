@@ -5,13 +5,16 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/SamiZeinsAI/gitdev/internal/database"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 type apiConfig struct {
 	port string
+	DB   *database.Queries
 }
 
 func main() {
@@ -42,6 +45,7 @@ func main() {
 	v1Router := chi.NewRouter()
 
 	v1Router.Get("/readiness", apiCfg.handlerReadiness)
+	v1Router.Get("/err", apiCfg.handlerErr)
 	srv := &http.Server{
 		Addr:    apiCfg.port,
 		Handler: mux,
