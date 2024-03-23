@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -23,10 +24,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	mux := http.NewServeMux()
-
+	dbUrl := os.Getenv("POSTGRES")
+	conn, err := sql.Open("postgres", dbUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
 	apiCfg := apiConfig{
 		port: os.Getenv("PORT"),
+		DB:   database.New(conn),
 	}
 
 	if apiCfg.port == "" {
@@ -46,9 +51,13 @@ func main() {
 
 	v1Router.Get("/readiness", apiCfg.handlerReadiness)
 	v1Router.Get("/err", apiCfg.handlerErr)
+	v1Router.Get("/auth/{provider}/callback", apiCfg.handlerGitHubCallback)
+
+	router.Mount("/v1", v1Router)
+
 	srv := &http.Server{
-		Addr:    apiCfg.port,
-		Handler: mux,
+		Addr:    ":" + apiCfg.port,
+		Handler: router,
 	}
 	log.Printf("Serving on port: %s\n", apiCfg.port)
 	log.Fatal(srv.ListenAndServe())

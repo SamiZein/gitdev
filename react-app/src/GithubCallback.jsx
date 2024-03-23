@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 const GitHubCallback = () => {
   useEffect(() => {
-    const callbackUrl = 'http://localhost:5173';
+    const callbackUrl = 'http://localhost:5173/';
     const clientId = '88c7fe2b6f54a8507680';
     const clientSecret = '5cf0affc3af84e2a4d98c31fdd8e3461dd7bb656';
 
@@ -34,6 +34,7 @@ const GitHubCallback = () => {
       } catch (error) {
         console.error('Error exchanging authorization code:', error);
       }
+
     };
 
     // Call the fetchAccessToken function when the component mounts

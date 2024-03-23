@@ -16,6 +16,7 @@ function App() {
             <Route path="/" element={<Developers />}/>
             <Route path="/collabs" element={<Collabs />}/>
             <Route path="/settings" element={<Settings />}/>
+
           </Routes>
         </div>
         <GitHubLoginBtn />
