@@ -3,24 +3,18 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
-	"os"
 
+	"github.com/SamiZeinsAI/gitdev/internal/auth"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/go-github/github"
-	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 )
 
 func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Request) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
-	}
 	githubOauthConfig := &oauth2.Config{
-		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
-		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
+		ClientID:     cfg.clientID,
+		ClientSecret: cfg.clientSecret,
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://github.com/login/oauth/authorize",
 			TokenURL: "https://github.com/login/oauth/access_token",
@@ -33,8 +27,6 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 	r = r.WithContext(context.WithValue(context.Background(), "provider", provider))
 
 	code := r.URL.Query().Get("code")
-	fmt.Println(code)
-	fmt.Println(githubOauthConfig.ClientID)
 	token, err := githubOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -48,11 +40,20 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(user)
 
-	// Store the access token securely (e.g., in a session or database)
-	// You can associate it with the user's session or identifier
+	accessToken, err := auth.MakeToken(int(user.GetID()), "gitdev-access", cfg.jwtSecret)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	// Return the user information to the frontend
-	http.Redirect(w, r, "http://localhost:5173", http.StatusFound)
+	refreshToken, err := auth.MakeToken(int(user.GetID()), "gitdev-refresh", cfg.jwtSecret)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s&refresh_token=%s", accessToken, refreshToken)
+
+	http.Redirect(w, r, redirectURL, http.StatusFound)
 }

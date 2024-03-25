@@ -2,8 +2,6 @@ package main
 
 import (
 	"net/http"
-
-	"github.com/SamiZeinsAI/gitdev/internal/database"
 )
 
 func handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
@@ -11,6 +9,6 @@ func handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handlerUsersGet(w http.ResponseWriter, r *http.Request, user database.User) {
+func handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 
 }

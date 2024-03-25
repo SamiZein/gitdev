@@ -14,8 +14,11 @@ import (
 )
 
 type apiConfig struct {
-	port string
-	DB   *database.Queries
+	port         string
+	DB           *database.Queries
+	jwtSecret    string
+	clientID     string
+	clientSecret string
 }
 
 func main() {
@@ -30,8 +33,11 @@ func main() {
 		log.Fatal(err)
 	}
 	apiCfg := apiConfig{
-		port: os.Getenv("PORT"),
-		DB:   database.New(conn),
+		port:         os.Getenv("PORT"),
+		DB:           database.New(conn),
+		jwtSecret:    os.Getenv("JWT_SECRET"),
+		clientID:     os.Getenv("GITHUB_CLIENT_ID"),
+		clientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 	}
 
 	if apiCfg.port == "" {

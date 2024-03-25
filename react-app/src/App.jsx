@@ -4,6 +4,7 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom';
 import Settings from './Settings.jsx';
 import Collabs from './Collabs.jsx';
 import GitHubLoginBtn from './GithubLoginBtn.jsx';
+import GithubCallback from './GithubCallback.jsx';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Developers />}/>
             <Route path="/collabs" element={<Collabs />}/>
             <Route path="/settings" element={<Settings />}/>
+            <Route path="/callback" element={<GithubCallback />}/>
 
           </Routes>
         </div>
