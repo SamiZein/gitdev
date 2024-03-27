@@ -1,10 +1,12 @@
-import Developers from './Developers.jsx'
+import Users from './Users.jsx'
 import NavBar from './NavBar.jsx'
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
 import Settings from './Settings.jsx';
 import Collabs from './Collabs.jsx';
 import GitHubLoginBtn from './GithubLoginBtn.jsx';
 import GithubCallback from './GithubCallback.jsx';
+import dotenv from 'dotenv';
+dotenv.config();
 
 function App() {
   return (
@@ -14,7 +16,7 @@ function App() {
         <NavBar />
         <div className="routes">
           <Routes>
-            <Route path="/" element={<Developers />}/>
+            <Route path="/" element={<Users />}/>
             <Route path="/collabs" element={<Collabs />}/>
             <Route path="/settings" element={<Settings />}/>
             <Route path="/callback" element={<GithubCallback />}/>

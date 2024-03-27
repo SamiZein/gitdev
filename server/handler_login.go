@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
-	"github.com/SamiZeinsAI/gitdev/internal/auth"
 	"github.com/go-chi/chi/v5"
-	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
 )
 
@@ -20,7 +19,7 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 			TokenURL: "https://github.com/login/oauth/access_token",
 		},
 
-		Scopes: []string{"user"},
+		Scopes: []string{"read:user"},
 	}
 
 	provider := chi.URLParam(r, "provider")
@@ -32,28 +31,10 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	oauthClient := oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(token))
-	client := github.NewClient(oauthClient)
 
-	user, _, err := client.Users.Get(context.Background(), "")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	accessToken, err := auth.MakeToken(int(user.GetID()), "gitdev-access", cfg.jwtSecret)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	refreshToken, err := auth.MakeToken(int(user.GetID()), "gitdev-refresh", cfg.jwtSecret)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s&refresh_token=%s", accessToken, refreshToken)
+	accessToken := token.AccessToken
+	expiresAt := token.Expiry.Format(time.RFC3339)
+	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s&expires_ay=%s", accessToken, expiresAt)
 
 	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
