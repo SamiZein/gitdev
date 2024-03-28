@@ -4,11 +4,11 @@ import (
 	"net/http"
 )
 
-func handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
-	type parameters struct {
+func (cfg *apiConfig) handlerUsersGetAll(w http.ResponseWriter, r *http.Request) {
+	users, err := cfg.DB.GetUsers(r.Context())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error retrieving users from database")
+		return
 	}
-}
-
-func handlerUsersGet(w http.ResponseWriter, r *http.Request) {
-
+	respondWithJSON(w, http.StatusOK, users)
 }

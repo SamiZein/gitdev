@@ -57,7 +57,8 @@ func main() {
 
 	v1Router.Get("/readiness", apiCfg.handlerReadiness)
 	v1Router.Get("/err", apiCfg.handlerErr)
-	v1Router.Get("/auth/{provider}/callback", apiCfg.handlerGitHubCallback)
+	v1Router.Get("/auth/callback", apiCfg.handlerGitHubCallback)
+	v1Router.Get("/users", apiCfg.handlerUsersGetAll)
 
 	router.Mount("/v1", v1Router)
 

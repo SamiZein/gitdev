@@ -1,0 +1,6 @@
+-- +goose Up
+CREATE TABLE github_info (
+    id UUID created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP username TEXT NOT NULL github_id repos INT NOT NULL user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
+);
+-- +gooseDown
+DROP TABLE github_info;

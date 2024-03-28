@@ -5,8 +5,7 @@ import Settings from './Settings.jsx';
 import Collabs from './Collabs.jsx';
 import GitHubLoginBtn from './GithubLoginBtn.jsx';
 import GithubCallback from './GithubCallback.jsx';
-import dotenv from 'dotenv';
-dotenv.config();
+
 
 function App() {
   return (

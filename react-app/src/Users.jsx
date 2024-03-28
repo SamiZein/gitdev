@@ -1,20 +1,21 @@
 import { TbHammer } from "react-icons/tb";
 import UserCard from "./UserCard";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "./config";
 
 export default function Users() {
   const skills = ["UX", "UI", "React", "Tailwind"];
   const skillsRequired = ["Backend"];
   const skillsPreferred = ["Go"];
   const [users, setUsers] = useState();
-
   useEffect(() => {
-    fetchUsers();
+    
+    fetchUsers(); 
   },[]);
 
   const fetchUsers = async () => {
     try{
-      const response = await fetch(`${apiBaseURL}/users`)
+      const response = await fetch(`${API_BASE_URL}/v1/users`)
       if (response.ok) {
           const data = await response.json();
           setUsers(data)

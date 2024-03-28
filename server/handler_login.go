@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"golang.org/x/oauth2"
 )
 
@@ -22,19 +21,18 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		Scopes: []string{"read:user"},
 	}
 
-	provider := chi.URLParam(r, "provider")
-	r = r.WithContext(context.WithValue(context.Background(), "provider", provider))
-
 	code := r.URL.Query().Get("code")
 	token, err := githubOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	fmt.Println(token)
 
 	accessToken := token.AccessToken
-	expiresAt := token.Expiry.Format(time.RFC3339)
-	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s&expires_ay=%s", accessToken, expiresAt)
+	expiresAt := time.Now().Add(8 * time.Hour)
+	fmt.Println(expiresAt)
+	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s&expires_at=%s", accessToken, expiresAt)
 
 	http.Redirect(w, r, redirectURL, http.StatusFound)
 }

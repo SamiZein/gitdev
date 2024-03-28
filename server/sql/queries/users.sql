@@ -1,6 +1,6 @@
 -- name: CreateUser :one
-INSERT INTO users (id, created_at, updated_at, name)
-VALUES ($1, $2, $3, $4)
+INSERT INTO users (id, github_username, access_token)
+VALUES ($1, $2, $3)
 RETURNING *;
 -- name: GetUsers :many
 SELECT *
