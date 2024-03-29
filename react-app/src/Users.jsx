@@ -9,7 +9,6 @@ export default function Users() {
   const skillsPreferred = ["Go"];
   const [users, setUsers] = useState();
   useEffect(() => {
-    
     fetchUsers(); 
   },[]);
 
@@ -38,30 +37,19 @@ export default function Users() {
         </div>
         <div>Your next collaborator could be right here.</div>
       </div>
-      <article>
+      <article id="users-section" className="p-4">
         {users?.length
-        ?  users.map((user,i) => <li key={i}>{user.username}</li>
+        ?  users.map((user,i) => 
+          <UserCard 
+            avatarUrl={user.AvatarUrl}
+            name={user.Username}
+            skills={skills}
+            skillsRequired={skillsRequired}
+            skillsPreferred={skillsPreferred}
+          />
         ): <p>No users to display</p>
         }
       </article>
-
-
-
-
-      <div id="users-section" className="p-4">
-        <UserCard
-          imageUrl="https://github.com/shadcn.png"
-          skills={skills}
-          skillsRequired={skillsRequired}
-          skillsPreferred={skillsPreferred}
-        />
-        <UserCard
-          imageUrl="https://github.com/shadcn.png"
-          skills={skills}
-          skillsRequired={skillsRequired}
-          skillsPreferred={skillsPreferred}
-        />
-      </div>
     </>
   );
 }

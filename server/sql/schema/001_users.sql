@@ -6,7 +6,7 @@ CREATE TABLE users (
     access_token TEXT NOT NULL,
     name TEXT NOT NULL,
     username TEXT UNIQUE NOT NULL,
-    github_id INT NOT NULL,
+    github_id INT UNIQUE NOT NULL,
     repos INT NOT NULL,
     email TEXT NOT NULL,
     bio TEXT NOT NULL,

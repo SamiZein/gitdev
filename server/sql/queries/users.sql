@@ -10,7 +10,9 @@ INSERT INTO users (
         bio,
         avatar_url
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (github_id) DO
+UPDATE
+SET access_token = $2
 RETURNING *;
 -- name: GetAllUsers :many
 SELECT *
