@@ -1,4 +1,3 @@
-import './Avatar.css';
 export default function Avatar({ src, alt, size }) {
     const avatarStyle = {
         width: size,

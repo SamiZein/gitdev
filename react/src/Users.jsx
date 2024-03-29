@@ -37,10 +37,11 @@ export default function Users() {
         </div>
         <div>Your next collaborator could be right here.</div>
       </div>
-      <article id="users-section" className="p-4">
+      <div id="users-section" className="p-4">
         {users?.length
         ?  users.map((user,i) => 
           <UserCard 
+            key={i}
             avatarUrl={user.AvatarUrl}
             name={user.Username}
             skills={skills}
@@ -49,7 +50,7 @@ export default function Users() {
           />
         ): <p>No users to display</p>
         }
-      </article>
+      </div>
     </>
   );
 }

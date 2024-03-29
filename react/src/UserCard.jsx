@@ -15,19 +15,19 @@ export default function UserCard({ avatarUrl, name, skills, skillsRequired, skil
             <div className="flex flex-row">
                 <div>Skills: </div>
                 {skills.map((skill, index) => (
-                    <Tag skill={skill} index={index} />
+                    <Tag skill={skill} key={index} />
                 ))}
             </div>
             <div className="flex flex-row">
                 <div>Required: </div>
                 {skillsRequired.map((skill, index) => (
-                    <Tag skill={skill} index={index} />
+                    <Tag skill={skill} key={index} />
                 ))}
             </div>
             <div className="flex flex-row">
                 <div>Preferred: </div>
                 {skillsPreferred.map((skill, index) => (
-                    <Tag skill={skill} index={index} />
+                    <Tag skill={skill} key={index} />
                 ))}
             </div>
         </div>

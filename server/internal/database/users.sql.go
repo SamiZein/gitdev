@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -25,7 +26,8 @@ INSERT INTO users (
     )
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (github_id) DO
 UPDATE
-SET access_token = $2
+SET access_token = $2,
+    updated_at = $10
 RETURNING id, created_at, updated_at, access_token, name, username, github_id, repos, email, bio, avatar_url
 `
 
@@ -39,6 +41,7 @@ type CreateUserParams struct {
 	Email       string
 	Bio         string
 	AvatarUrl   string
+	UpdatedAt   time.Time
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -52,6 +55,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Email,
 		arg.Bio,
 		arg.AvatarUrl,
+		arg.UpdatedAt,
 	)
 	var i User
 	err := row.Scan(

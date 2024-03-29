@@ -12,7 +12,8 @@ INSERT INTO users (
     )
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (github_id) DO
 UPDATE
-SET access_token = $2
+SET access_token = $2,
+    updated_at = $10
 RETURNING *;
 -- name: GetAllUsers :many
 SELECT *

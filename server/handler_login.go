@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/SamiZeinsAI/gitdev/internal/database"
 	"github.com/google/go-github/github"
@@ -56,12 +57,12 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		Email:       user.GetEmail(),
 		Bio:         user.GetBio(),
 		AvatarUrl:   user.GetAvatarURL(),
+		UpdatedAt:   time.Now(),
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error inserting user into database")
 		return
 	}
-
 	fmt.Println(dbUser)
 	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s", token.AccessToken)
 
