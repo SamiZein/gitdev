@@ -3,8 +3,14 @@ CREATE TABLE users (
     id UUID PRIMARY KEY,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    github_username TEXT UNIQUE NOT NULL,
-    access_token TEXT NOT NULL
+    access_token TEXT NOT NULL,
+    name TEXT NOT NULL,
+    username TEXT UNIQUE NOT NULL,
+    github_id INT NOT NULL,
+    repos INT NOT NULL,
+    email TEXT NOT NULL,
+    bio TEXT NOT NULL,
+    avatar_url TEXT NOT NULL
 );
 -- +goose Down
 DROP TABLE users;

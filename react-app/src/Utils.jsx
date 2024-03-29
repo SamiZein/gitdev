@@ -5,7 +5,6 @@ const redirectUri = `${API_BASE_URL}/v1/auth/callback`;
 const scope = 'read:user'; 
 
 export default function handleLogin() {
-    console.log(API_BASE_URL)
     const authorizationUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
     window.location.href = authorizationUrl;
 };

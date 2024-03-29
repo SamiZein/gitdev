@@ -11,9 +11,15 @@ import (
 )
 
 type User struct {
-	ID             uuid.UUID
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	GithubUsername string
-	AccessToken    string
+	ID          uuid.UUID
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	AccessToken string
+	Name        string
+	Username    string
+	GithubID    int32
+	Repos       int32
+	Email       string
+	Bio         string
+	AvatarUrl   string
 }

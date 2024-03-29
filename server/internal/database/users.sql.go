@@ -12,38 +12,70 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, github_username, access_token)
-VALUES ($1, $2, $3)
-RETURNING id, created_at, updated_at, github_username, access_token
+INSERT INTO users (
+        id,
+        access_token,
+        name,
+        username,
+        github_id,
+        repos,
+        email,
+        bio,
+        avatar_url
+    )
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+RETURNING id, created_at, updated_at, access_token, name, username, github_id, repos, email, bio, avatar_url
 `
 
 type CreateUserParams struct {
-	ID             uuid.UUID
-	GithubUsername string
-	AccessToken    string
+	ID          uuid.UUID
+	AccessToken string
+	Name        string
+	Username    string
+	GithubID    int32
+	Repos       int32
+	Email       string
+	Bio         string
+	AvatarUrl   string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.ID, arg.GithubUsername, arg.AccessToken)
+	row := q.db.QueryRowContext(ctx, createUser,
+		arg.ID,
+		arg.AccessToken,
+		arg.Name,
+		arg.Username,
+		arg.GithubID,
+		arg.Repos,
+		arg.Email,
+		arg.Bio,
+		arg.AvatarUrl,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.GithubUsername,
 		&i.AccessToken,
+		&i.Name,
+		&i.Username,
+		&i.GithubID,
+		&i.Repos,
+		&i.Email,
+		&i.Bio,
+		&i.AvatarUrl,
 	)
 	return i, err
 }
 
-const getUsers = `-- name: GetUsers :many
-SELECT id, created_at, updated_at, github_username, access_token
+const getAllUsers = `-- name: GetAllUsers :many
+SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, email, bio, avatar_url
 FROM users
 LIMIT 20
 `
 
-func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, getUsers)
+func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getAllUsers)
 	if err != nil {
 		return nil, err
 	}
@@ -55,8 +87,14 @@ func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 			&i.ID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.GithubUsername,
 			&i.AccessToken,
+			&i.Name,
+			&i.Username,
+			&i.GithubID,
+			&i.Repos,
+			&i.Email,
+			&i.Bio,
+			&i.AvatarUrl,
 		); err != nil {
 			return nil, err
 		}
