@@ -2,12 +2,14 @@ import { TbHammer } from "react-icons/tb";
 import UserCard from "./UserCard";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "./config";
+import UserPanel from "./UserPanel";
 
 export default function Users() {
   const skills = ["UX", "UI", "React", "Tailwind"];
   const skillsRequired = ["Backend"];
   const skillsPreferred = ["Go"];
   const [users, setUsers] = useState();
+  const [selectedUser, setSelectedUser] = useState(null);
   useEffect(() => {
     fetchUsers(); 
   },[]);
@@ -21,11 +23,15 @@ export default function Users() {
       } else {
           throw new Error("Failed to fetch users");
       }
-      console.log(users)
     } catch(error) {
         console.error("Error fetching users:", error);
         throw error;
     }
+  };
+
+  const selectUser = (user) => {
+    console.log("Hello")
+    setSelectedUser(user);
   };
 
   return (
@@ -37,19 +43,22 @@ export default function Users() {
         </div>
         <div>Your next collaborator could be right here.</div>
       </div>
-      <div id="users-section" className="p-4">
-        {users?.length
-        ?  users.map((user,i) => 
-          <UserCard 
-            key={i}
-            avatarUrl={user.AvatarUrl}
-            name={user.Username}
-            skills={skills}
-            skillsRequired={skillsRequired}
-            skillsPreferred={skillsPreferred}
-          />
-        ): <p>No users to display</p>
-        }
+      <div className="flex flex-row">
+        <div id="users-section" className="p-4">
+          {users?.length
+          ?  users.map((user) => 
+            <UserCard 
+              onClick={() => selectUser(user)}
+              key={user.ID}
+              user={user}
+              skills={skills}
+              skillsRequired={skillsRequired}
+              skillsPreferred={skillsPreferred}
+            />
+          ): <p>No users to display</p>
+          }
+        </div>
+        <UserPanel user={selectedUser} />
       </div>
     </>
   );

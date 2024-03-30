@@ -47,7 +47,7 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	dbUser, err := cfg.DB.CreateUser(r.Context(), database.CreateUserParams{
+	_, err = cfg.DB.CreateUser(r.Context(), database.CreateUserParams{
 		ID:          uuid.New(),
 		AccessToken: token.AccessToken,
 		Name:        user.GetName(),
@@ -63,7 +63,6 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		respondWithError(w, http.StatusInternalServerError, "Error inserting user into database")
 		return
 	}
-	fmt.Println(dbUser)
 	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s", token.AccessToken)
 
 	http.Redirect(w, r, redirectURL, http.StatusFound)

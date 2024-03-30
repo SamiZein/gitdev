@@ -1,16 +1,16 @@
 import Avatar from "./Avatar";
 import Tag from "./Tag";
 
-export default function UserCard({ avatarUrl, name, skills, skillsRequired, skillsPreferred }) {
+export default function UserCard({ user, skills, skillsRequired, skillsPreferred, onClick }) {
     return(
-        <div className="my-2">
+        <div onClick={onClick} className="my-2">
             <div className="flex flex-row">
                 <Avatar 
-                    src={avatarUrl}
+                    src={user.AvatarUrl}
                     alt="https://github.com/shadcn.png"
                     size="20px"
                 />
-                <div>{name}</div>
+                <div>{user.Username}</div>
             </div>
             <div className="flex flex-row">
                 <div>Skills: </div>
