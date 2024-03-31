@@ -30,7 +30,6 @@ export default function Users() {
   };
 
   const selectUser = (user) => {
-    console.log("Hello")
     setSelectedUser(user);
   };
 
