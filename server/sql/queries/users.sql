@@ -19,3 +19,7 @@ RETURNING *;
 SELECT *
 FROM users
 LIMIT 20;
+-- name: GetUserByToken :one
+SELECT *
+FROM users
+WHERE github_id = $1;

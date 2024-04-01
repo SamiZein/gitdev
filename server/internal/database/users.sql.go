@@ -114,3 +114,28 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 	}
 	return items, nil
 }
+
+const getUserByToken = `-- name: GetUserByToken :one
+SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, email, bio, avatar_url
+FROM users
+WHERE github_id = $1
+`
+
+func (q *Queries) GetUserByToken(ctx context.Context, githubID int32) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByToken, githubID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.AccessToken,
+		&i.Name,
+		&i.Username,
+		&i.GithubID,
+		&i.Repos,
+		&i.Email,
+		&i.Bio,
+		&i.AvatarUrl,
+	)
+	return i, err
+}

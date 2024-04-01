@@ -8,7 +8,7 @@ export default function NavBar() {
     return(
         <div>
             <nav className="font-bold">
-                <ul className="flex flex-row px-4 py-3 space-x-4">
+                <ul className="flex flex-row px-4 py-1 space-x-4">
                     <NavItem icon={TbHammer} text="Developers" route="/" />
                     <NavItem icon={TbPlugConnected} text="Collabs" route="/collabs" />
                     <NavItem icon={GoGear} text="Settings" route="/settings" />
