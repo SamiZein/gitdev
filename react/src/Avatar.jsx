@@ -1,4 +1,4 @@
-export default function Avatar({ src, alt, size }) {
+export default function Avatar({ src, size }) {
     const avatarStyle = {
         width: size,
         height: size,
@@ -9,7 +9,7 @@ export default function Avatar({ src, alt, size }) {
       return (
         <img
           src={src}
-          alt={alt}
+          alt="https://github.com/shadcn.png"
           style={avatarStyle}
         />
       );

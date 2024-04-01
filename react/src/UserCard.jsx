@@ -7,7 +7,6 @@ export default function UserCard({ user, skills, skillsRequired, skillsPreferred
             <div className="flex flex-row">
                 <Avatar 
                     src={user.AvatarUrl}
-                    alt="https://github.com/shadcn.png"
                     size="20px"
                 />
                 <div>{user.Username}</div>
