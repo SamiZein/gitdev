@@ -1,20 +1,18 @@
 import { NavLink } from "react-router-dom"
 
-export default function NavItem({ icon: Icon, text,route}) {
-    const activeStyle = {
-        borderBottom: '2px solid #f56a00',
-    };
+export default function NavItem({ icon: Icon, text, route}) {
+
     return(
         <li>
             <NavLink 
                 to={route} 
                 className={({ isActive }) =>
-                    `flex flex-row items-center ${
-                        isActive ? 'border-b-2 border-orange-500' : ''
-                    }`
-        }
+                    isActive
+                    ? "flex pb-3 size-full border-b-2 border-orange-500"
+                    : "flex pb-3 size-full"
+                }
             >
-                {Icon && <Icon className="mr-2 text-gray-300 place-self-center" />}
+                {Icon && <Icon className="mr-1 text-gray-300 place-self-center" />}
                 {text}
             </NavLink>
         </li>

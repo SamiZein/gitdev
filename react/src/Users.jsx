@@ -34,16 +34,16 @@ export default function Users() {
   };
 
   return (
-    <>
+    <div className="size-full">
       <div id="devs-header" className="pt-2 pl-2">
-        <div className="flex flex-row">
+        <div className="flex">
           <TbHammer className="text-3xl place-self-center" />
           <div className="text-2xl">Developers</div>
         </div>
         <div>Your next collaborator could be right here.</div>
       </div>
-      <div className="flex flex-row">
-        <div id="users-section" className="p-4">
+      <div className="flex">
+        <div id="users-section" className="p-4 w-96">
           {users?.length
           ?  users.map((user) => 
             <UserCard 
@@ -57,8 +57,8 @@ export default function Users() {
           ): <p>No users to display</p>
           }
         </div>
-        <UserPanel user={selectedUser} />
+        <UserPanel className="w-1/2" user={selectedUser} />
       </div>
-    </>
+    </div>
   );
 }

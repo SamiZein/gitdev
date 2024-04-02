@@ -28,6 +28,7 @@ export default function GithubCallback() {
 
   useEffect(() => {
     fetchUser();
+    
     navigate('/');
   }, [navigate]);
   return (

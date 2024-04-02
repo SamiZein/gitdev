@@ -3,7 +3,7 @@ import Tag from "./Tag";
 
 export default function UserCard({ user, skills, skillsRequired, skillsPreferred, onClick }) {
     return(
-        <div onClick={onClick} className="my-2">
+        <div onClick={onClick} className="my-2 ">
             <div className="flex flex-row">
                 <Avatar 
                     src={user.AvatarUrl}

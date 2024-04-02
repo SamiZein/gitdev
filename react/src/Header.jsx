@@ -1,4 +1,4 @@
-import { FaGitkraken } from "react-icons/fa";
+import { TbTrident } from "react-icons/tb";
 import NavBar  from "./NavBar"
 import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
@@ -12,16 +12,15 @@ export default function Header() {
     return (
       <div className="bg-dark-bg">
         <div className="flex items-center justify-between p-1">
-          <div className="flex items-center space-x-4">
-            <FaGitkraken className="text-5xl" />
+          <div className="flex items-center pl-2 space-x-1">
+            <TbTrident className="text-4xl" />
             {isLoggedIn && <div>{user.Username}</div>}
           </div>
           <div>
-            {isLoggedIn ? (
-              <Avatar src={user.AvatarUrl} size="40px" />
-            ) : (
-              <Button onClick={handleLogin} text="Sign in" />
-            )}
+            {isLoggedIn 
+            ? (<Avatar src={user.AvatarUrl} size="30px" />)
+            : (<Button onClick={handleLogin} text="Sign in" />)
+            }
           </div>
         </div>
         <NavBar />

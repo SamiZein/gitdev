@@ -5,6 +5,7 @@
 package database
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -20,6 +21,7 @@ type User struct {
 	GithubID    int32
 	Repos       int32
 	Email       string
-	Bio         string
+	PanelBody   sql.NullString
+	Role        sql.NullString
 	AvatarUrl   string
 }

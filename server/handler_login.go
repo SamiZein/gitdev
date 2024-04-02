@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/SamiZeinsAI/gitdev/internal/database"
 	"github.com/google/go-github/github"
@@ -55,9 +55,15 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		GithubID:    int32(user.GetID()),
 		Repos:       int32(len(repos)),
 		Email:       user.GetEmail(),
-		Bio:         user.GetBio(),
-		AvatarUrl:   user.GetAvatarURL(),
-		UpdatedAt:   time.Now(),
+		PanelBody: sql.NullString{
+			String: user.GetBio(),
+			Valid:  true,
+		},
+		Role: sql.NullString{
+			String: "",
+			Valid:  false,
+		},
+		AvatarUrl: user.GetAvatarURL(),
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error inserting user into database")

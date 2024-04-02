@@ -7,7 +7,7 @@ package database
 
 import (
 	"context"
-	"time"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -21,14 +21,15 @@ INSERT INTO users (
         github_id,
         repos,
         email,
-        bio,
+        role,
+        panel_body,
         avatar_url
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (github_id) DO
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (github_id) DO
 UPDATE
 SET access_token = $2,
-    updated_at = $10
-RETURNING id, created_at, updated_at, access_token, name, username, github_id, repos, email, bio, avatar_url
+    updated_at = CURRENT_TIMESTAMP
+RETURNING id, created_at, updated_at, access_token, name, username, github_id, repos, email, panel_body, role, avatar_url
 `
 
 type CreateUserParams struct {
@@ -39,9 +40,9 @@ type CreateUserParams struct {
 	GithubID    int32
 	Repos       int32
 	Email       string
-	Bio         string
+	Role        sql.NullString
+	PanelBody   sql.NullString
 	AvatarUrl   string
-	UpdatedAt   time.Time
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -53,9 +54,9 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.GithubID,
 		arg.Repos,
 		arg.Email,
-		arg.Bio,
+		arg.Role,
+		arg.PanelBody,
 		arg.AvatarUrl,
-		arg.UpdatedAt,
 	)
 	var i User
 	err := row.Scan(
@@ -68,14 +69,15 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.GithubID,
 		&i.Repos,
 		&i.Email,
-		&i.Bio,
+		&i.PanelBody,
+		&i.Role,
 		&i.AvatarUrl,
 	)
 	return i, err
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
-SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, email, bio, avatar_url
+SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, email, panel_body, role, avatar_url
 FROM users
 LIMIT 20
 `
@@ -99,7 +101,8 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 			&i.GithubID,
 			&i.Repos,
 			&i.Email,
-			&i.Bio,
+			&i.PanelBody,
+			&i.Role,
 			&i.AvatarUrl,
 		); err != nil {
 			return nil, err
@@ -115,14 +118,14 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 	return items, nil
 }
 
-const getUserByToken = `-- name: GetUserByToken :one
-SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, email, bio, avatar_url
+const getUserByGitHubID = `-- name: GetUserByGitHubID :one
+SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, email, panel_body, role, avatar_url
 FROM users
 WHERE github_id = $1
 `
 
-func (q *Queries) GetUserByToken(ctx context.Context, githubID int32) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByToken, githubID)
+func (q *Queries) GetUserByGitHubID(ctx context.Context, githubID int32) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByGitHubID, githubID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -134,7 +137,8 @@ func (q *Queries) GetUserByToken(ctx context.Context, githubID int32) (User, err
 		&i.GithubID,
 		&i.Repos,
 		&i.Email,
-		&i.Bio,
+		&i.PanelBody,
+		&i.Role,
 		&i.AvatarUrl,
 	)
 	return i, err

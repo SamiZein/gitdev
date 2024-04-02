@@ -9,7 +9,8 @@ CREATE TABLE users (
     github_id INT UNIQUE NOT NULL,
     repos INT NOT NULL,
     email TEXT NOT NULL,
-    bio TEXT NOT NULL,
+    panel_body TEXT,
+    role TEXT,
     avatar_url TEXT NOT NULL
 );
 -- +goose Down

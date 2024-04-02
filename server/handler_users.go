@@ -15,7 +15,7 @@ func (cfg *apiConfig) handlerUsersGetAll(w http.ResponseWriter, r *http.Request)
 	respondWithJSON(w, http.StatusOK, users)
 }
 func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request, user *github.User) {
-	dbUser, err := cfg.DB.GetUserByToken(r.Context(), int32(user.GetID()))
+	dbUser, err := cfg.DB.GetUserByGitHubID(r.Context(), int32(user.GetID()))
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error gettign user from database")
 	}
