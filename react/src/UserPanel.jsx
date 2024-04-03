@@ -1,6 +1,6 @@
 import Avatar from "./Avatar";
-import Button from "./Button";
-import RepoCount from "./RepoCount";
+import AuthedBtn from "./AuthedBtn";
+import GithubStats from "./GithubStats";
 
 export default function UserPanel({user}) {
 
@@ -15,11 +15,14 @@ export default function UserPanel({user}) {
                 <div>
                     <h1 className="text-xl">{user.Username}</h1>
 
-                    <Button onClick={() => postCollab()} text="Collab" />
+                    <AuthedBtn onClick={() => postCollab()} text="Collab" />
                 </div>
             </div>
-            <div>{user.PanelBody.String}</div>
-            <RepoCount count={user.Repos} />
+            <div>{user.PanelBody.Valid
+                ?user.PanelBody.String
+                :"Empty"
+                }</div>
+            <GithubStats user={user} />
         </div>
     );
 }

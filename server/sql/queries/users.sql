@@ -6,12 +6,27 @@ INSERT INTO users (
         username,
         github_id,
         repos,
+        following,
+        followers,
         email,
         role,
         panel_body,
         avatar_url
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (github_id) DO
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10,
+        $11,
+        $12
+    ) ON CONFLICT (github_id) DO
 UPDATE
 SET access_token = $2,
     updated_at = CURRENT_TIMESTAMP

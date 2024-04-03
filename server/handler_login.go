@@ -46,6 +46,7 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		fmt.Printf("Error retrieving repositories: %v\n", err)
 		return
 	}
+	user.GetFollowing()
 
 	_, err = cfg.DB.CreateUser(r.Context(), database.CreateUserParams{
 		ID:          uuid.New(),
@@ -54,14 +55,16 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		Username:    user.GetLogin(),
 		GithubID:    int32(user.GetID()),
 		Repos:       int32(len(repos)),
+		Following:   int32(user.GetFollowing()),
+		Followers:   int32(user.GetFollowers()),
 		Email:       user.GetEmail(),
-		PanelBody: sql.NullString{
-			String: user.GetBio(),
-			Valid:  true,
-		},
 		Role: sql.NullString{
 			String: "",
 			Valid:  false,
+		},
+		PanelBody: sql.NullString{
+			String: user.GetBio(),
+			Valid:  true,
 		},
 		AvatarUrl: user.GetAvatarURL(),
 	})

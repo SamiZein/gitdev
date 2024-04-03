@@ -20,6 +20,8 @@ type User struct {
 	Username    string
 	GithubID    int32
 	Repos       int32
+	Following   int32
+	Followers   int32
 	Email       string
 	PanelBody   sql.NullString
 	Role        sql.NullString

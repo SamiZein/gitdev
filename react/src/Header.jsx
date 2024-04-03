@@ -3,8 +3,8 @@ import NavBar  from "./NavBar"
 import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import Avatar from "./Avatar";
-import Button from "./Button";
 import handleLogin from './Utils';
+import AuthedBtn from "./AuthedBtn";
 
 export default function Header() {
     const { isLoggedIn, user} = useContext(AuthContext);
@@ -19,7 +19,7 @@ export default function Header() {
           <div>
             {isLoggedIn 
             ? (<Avatar src={user.AvatarUrl} size="30px" />)
-            : (<Button onClick={handleLogin} text="Sign in" />)
+            : (<AuthedBtn onClick={handleLogin} text="Sign in" />)
             }
           </div>
         </div>

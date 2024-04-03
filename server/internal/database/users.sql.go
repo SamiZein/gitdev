@@ -20,16 +20,31 @@ INSERT INTO users (
         username,
         github_id,
         repos,
+        following,
+        followers,
         email,
         role,
         panel_body,
         avatar_url
     )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) ON CONFLICT (github_id) DO
+VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5,
+        $6,
+        $7,
+        $8,
+        $9,
+        $10,
+        $11,
+        $12
+    ) ON CONFLICT (github_id) DO
 UPDATE
 SET access_token = $2,
     updated_at = CURRENT_TIMESTAMP
-RETURNING id, created_at, updated_at, access_token, name, username, github_id, repos, email, panel_body, role, avatar_url
+RETURNING id, created_at, updated_at, access_token, name, username, github_id, repos, following, followers, email, panel_body, role, avatar_url
 `
 
 type CreateUserParams struct {
@@ -39,6 +54,8 @@ type CreateUserParams struct {
 	Username    string
 	GithubID    int32
 	Repos       int32
+	Following   int32
+	Followers   int32
 	Email       string
 	Role        sql.NullString
 	PanelBody   sql.NullString
@@ -53,6 +70,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Username,
 		arg.GithubID,
 		arg.Repos,
+		arg.Following,
+		arg.Followers,
 		arg.Email,
 		arg.Role,
 		arg.PanelBody,
@@ -68,6 +87,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Username,
 		&i.GithubID,
 		&i.Repos,
+		&i.Following,
+		&i.Followers,
 		&i.Email,
 		&i.PanelBody,
 		&i.Role,
@@ -77,7 +98,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
-SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, email, panel_body, role, avatar_url
+SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, following, followers, email, panel_body, role, avatar_url
 FROM users
 LIMIT 20
 `
@@ -100,6 +121,8 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 			&i.Username,
 			&i.GithubID,
 			&i.Repos,
+			&i.Following,
+			&i.Followers,
 			&i.Email,
 			&i.PanelBody,
 			&i.Role,
@@ -119,7 +142,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 }
 
 const getUserByGitHubID = `-- name: GetUserByGitHubID :one
-SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, email, panel_body, role, avatar_url
+SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, following, followers, email, panel_body, role, avatar_url
 FROM users
 WHERE github_id = $1
 `
@@ -136,6 +159,8 @@ func (q *Queries) GetUserByGitHubID(ctx context.Context, githubID int32) (User, 
 		&i.Username,
 		&i.GithubID,
 		&i.Repos,
+		&i.Following,
+		&i.Followers,
 		&i.Email,
 		&i.PanelBody,
 		&i.Role,

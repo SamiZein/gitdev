@@ -8,6 +8,8 @@ CREATE TABLE users (
     username TEXT UNIQUE NOT NULL,
     github_id INT UNIQUE NOT NULL,
     repos INT NOT NULL,
+    following INT NOT NULL,
+    followers INT NOT NULL,
     email TEXT NOT NULL,
     panel_body TEXT,
     role TEXT,

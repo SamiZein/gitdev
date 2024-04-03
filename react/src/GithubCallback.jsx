@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthContext";
 import { API_BASE_URL } from "./config";
 
 export default function GithubCallback() {
-  const { login} = useContext(AuthContext);
+  const {login} = useContext(AuthContext);
 
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
