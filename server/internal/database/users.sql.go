@@ -19,11 +19,7 @@ INSERT INTO users (
         name,
         username,
         github_id,
-        repos,
-        following,
-        followers,
         email,
-        role,
         panel_body,
         avatar_url
     )
@@ -35,16 +31,9 @@ VALUES (
         $5,
         $6,
         $7,
-        $8,
-        $9,
-        $10,
-        $11,
-        $12
-    ) ON CONFLICT (github_id) DO
-UPDATE
-SET access_token = $2,
-    updated_at = CURRENT_TIMESTAMP
-RETURNING id, created_at, updated_at, access_token, name, username, github_id, repos, following, followers, email, panel_body, role, avatar_url
+        $8
+    )
+RETURNING id
 `
 
 type CreateUserParams struct {
@@ -53,52 +42,29 @@ type CreateUserParams struct {
 	Name        string
 	Username    string
 	GithubID    int32
-	Repos       int32
-	Following   int32
-	Followers   int32
 	Email       string
-	Role        sql.NullString
 	PanelBody   sql.NullString
 	AvatarUrl   string
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error) {
 	row := q.db.QueryRowContext(ctx, createUser,
 		arg.ID,
 		arg.AccessToken,
 		arg.Name,
 		arg.Username,
 		arg.GithubID,
-		arg.Repos,
-		arg.Following,
-		arg.Followers,
 		arg.Email,
-		arg.Role,
 		arg.PanelBody,
 		arg.AvatarUrl,
 	)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.AccessToken,
-		&i.Name,
-		&i.Username,
-		&i.GithubID,
-		&i.Repos,
-		&i.Following,
-		&i.Followers,
-		&i.Email,
-		&i.PanelBody,
-		&i.Role,
-		&i.AvatarUrl,
-	)
-	return i, err
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
-SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, following, followers, email, panel_body, role, avatar_url
+SELECT id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
 FROM users
 LIMIT 20
 `
@@ -120,10 +86,9 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 			&i.Name,
 			&i.Username,
 			&i.GithubID,
-			&i.Repos,
-			&i.Following,
-			&i.Followers,
 			&i.Email,
+			&i.Followers,
+			&i.Following,
 			&i.PanelBody,
 			&i.Role,
 			&i.AvatarUrl,
@@ -142,7 +107,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 }
 
 const getUserByGitHubID = `-- name: GetUserByGitHubID :one
-SELECT id, created_at, updated_at, access_token, name, username, github_id, repos, following, followers, email, panel_body, role, avatar_url
+SELECT id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
 FROM users
 WHERE github_id = $1
 `
@@ -158,13 +123,23 @@ func (q *Queries) GetUserByGitHubID(ctx context.Context, githubID int32) (User, 
 		&i.Name,
 		&i.Username,
 		&i.GithubID,
-		&i.Repos,
-		&i.Following,
-		&i.Followers,
 		&i.Email,
+		&i.Followers,
+		&i.Following,
 		&i.PanelBody,
 		&i.Role,
 		&i.AvatarUrl,
 	)
 	return i, err
+}
+
+const updateUserToken = `-- name: UpdateUserToken :exec
+UPDATE users
+SET access_token = $1,
+    updated_at = CURRENT_TIMESTAMP
+`
+
+func (q *Queries) UpdateUserToken(ctx context.Context, accessToken string) error {
+	_, err := q.db.ExecContext(ctx, updateUserToken, accessToken)
+	return err
 }

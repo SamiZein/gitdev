@@ -4,8 +4,6 @@ import handleLogin from "./Utils";
 
 export default function AuthedBtn({onClick, text}){
     const {isLoggedIn} = useContext(AuthContext);
-
-
     return (
         <button 
         onClick={isLoggedIn?onClick:handleLogin} 

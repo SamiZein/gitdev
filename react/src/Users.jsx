@@ -34,7 +34,7 @@ export default function Users() {
   };
 
   return (
-    <div className="size-full">
+    <div>
       <div id="devs-header" className="pt-2 pl-2">
         <div className="flex">
           <TbHammer className="text-3xl place-self-center" />
@@ -57,7 +57,7 @@ export default function Users() {
           ): <p>No users to display</p>
           }
         </div>
-        <UserPanel className="w-1/2" user={selectedUser} />
+        <UserPanel user={selectedUser} />
       </div>
     </div>
   );

@@ -5,11 +5,7 @@ INSERT INTO users (
         name,
         username,
         github_id,
-        repos,
-        following,
-        followers,
         email,
-        role,
         panel_body,
         avatar_url
     )
@@ -21,16 +17,13 @@ VALUES (
         $5,
         $6,
         $7,
-        $8,
-        $9,
-        $10,
-        $11,
-        $12
-    ) ON CONFLICT (github_id) DO
-UPDATE
-SET access_token = $2,
-    updated_at = CURRENT_TIMESTAMP
-RETURNING *;
+        $8
+    )
+RETURNING id;
+-- name: UpdateUserToken :exec
+UPDATE users
+SET access_token = $1,
+    updated_at = CURRENT_TIMESTAMP;
 -- name: GetAllUsers :many
 SELECT *
 FROM users

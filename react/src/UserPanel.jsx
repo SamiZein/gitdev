@@ -5,19 +5,19 @@ import GithubStats from "./GithubStats";
 export default function UserPanel({user}) {
 
     const postCollab = async () =>{
-        console.log("post collab")
+        console.log(user)
     };
     return (
         user &&
-        <div className="size-full">
+        <div>
             <div className="flex">
                 <Avatar src={user.AvatarUrl} size="50px" />
                 <div>
                     <h1 className="text-xl">{user.Username}</h1>
-
-                    <AuthedBtn onClick={() => postCollab()} text="Collab" />
+                    <h2>{user.Role}</h2>
                 </div>
             </div>
+            <AuthedBtn onClick={() => postCollab()} text="Collab" />
             <div>{user.PanelBody.Valid
                 ?user.PanelBody.String
                 :"Empty"
