@@ -29,8 +29,22 @@ export default function Users() {
     }
   };
 
-  const selectUser = (user) => {
-    setSelectedUser(user);
+
+  const selectUser = async (user) => {
+    try{
+      const response = await fetch(`${API_BASE_URL}/v1/users/${user.GithubID}`);
+      if (response.ok) {
+        const data = await response.json();
+        setSelectedUser(data);
+      } else {
+        throw new Error("Failed to fetch users");
+      }
+    } catch(error) {
+        console.error("Error fetching users:", error);
+        throw error;
+    }
+    
+    
   };
 
   return (

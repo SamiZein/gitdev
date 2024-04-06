@@ -12,15 +12,15 @@ export default function UserPanel({user}) {
         user &&
         <div>
             <div className="flex">
-                <Avatar src={user.AvatarUrl} size="50px" />
+                <Avatar src={user.Profile.AvatarUrl} size="50px" />
                 <div>
                     <h1 className="text-xl">{user.Username}</h1>
                     <h2>{user.Role}</h2>
                 </div>
             </div>
             <AuthedBtn onClick={() => postCollab()} text="Collab" />
-            <div>{user.PanelBody.Valid
-                ?user.PanelBody.String
+            <div>{user.Profile.PanelBody.Valid
+                ?user.Profile.PanelBody.String
                 :"Empty"
                 }</div>
             <GithubStats user={user} />

@@ -8,3 +8,4 @@ export default function handleLogin() {
     const authorizationUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
     window.location.href = authorizationUrl;
 };
+

@@ -10,8 +10,8 @@ export default function GithubCallback() {
   const urlParams = new URLSearchParams(window.location.search);
   const accessToken = urlParams.get('access_token');
   const githubID = urlParams.get('github_id'); 
+
   const fetchUser = async () => {
-    
     try{
       const response = await fetch(`${API_BASE_URL}/v1/users/${githubID}`);
       if (response.ok) {
@@ -28,7 +28,6 @@ export default function GithubCallback() {
 
   useEffect(() => {
     fetchUser();
-    
     navigate('/');
   }, [navigate]);
   return (
