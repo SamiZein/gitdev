@@ -14,11 +14,11 @@ export default function Header() {
         <div className="flex items-center justify-between p-1">
           <div className="flex items-center pl-2 space-x-1">
             <TbTrident className="text-4xl" />
-            {isLoggedIn && <div>{user.Profile.Username}</div>}
+            {isLoggedIn && <div>{user.Username}</div>}
           </div>
           <div>
             {isLoggedIn 
-            ? (<Avatar src={user.Profile.AvatarUrl} size="30px" />)
+            ? (<Avatar src={user.AvatarUrl} size="30px" />)
             : (<AuthedBtn onClick={handleLogin} text="Sign in" />)
             }
           </div>
