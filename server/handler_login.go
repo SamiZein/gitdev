@@ -32,7 +32,7 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 	tc := oauth2.NewClient(context.Background(), ts)
 	client := github.NewClient(tc)
 
-	user, err := getGithubUser(token.AccessToken, client)
+	user, err := getGithubUser(client)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error getting user info from github")
 		return
