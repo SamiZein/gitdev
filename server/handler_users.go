@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/SamiZeinsAI/gitdev/internal/database"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -19,10 +18,6 @@ func (cfg *apiConfig) handlerUsersGetAll(w http.ResponseWriter, r *http.Request)
 }
 
 func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
-	type returnVals struct {
-		Profile database.User
-		Repos   []Repo
-	}
 
 	githubID, err := strconv.Atoi(chi.URLParam(r, "github_id"))
 
@@ -36,25 +31,23 @@ func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Error getting user from database")
 		return
 	}
+	user := databaseUserToUser(dbUser)
+
 	dbRepos, err := cfg.DB.GetUsersRepos(r.Context(), dbUser.ID)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error getting users repos from database")
 		return
 	}
-	repos := []Repo{}
+	user.Repos = []Repo{}
 	for i := range dbRepos {
-		repo := cfg.databaseRepoToRepo(&dbRepos[i])
+		repo := databaseRepoToRepo(&dbRepos[i])
 		languages, err := cfg.DB.GetReposLanguages(context.Background(), repo.ID)
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, "Error getting repos languages from database")
 			return
 		}
 		repo.Languages = languages
-		repos = append(repos, repo)
+		user.Repos = append(user.Repos, repo)
 	}
-	resp := returnVals{
-		Profile: dbUser,
-		Repos:   repos,
-	}
-	respondWithJSON(w, http.StatusOK, resp)
+	respondWithJSON(w, http.StatusOK, user)
 }

@@ -12,6 +12,7 @@ type User struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 	AccessToken string
+	Repos       []Repo
 }
 
 func databaseUserToUser(user database.User) User {
@@ -35,7 +36,7 @@ type Repo struct {
 	Languages     []string
 }
 
-func (cfg *apiConfig) databaseRepoToRepo(repo *database.Repo) Repo {
+func databaseRepoToRepo(repo *database.Repo) Repo {
 	return Repo{
 		ID:            repo.ID,
 		Name:          repo.Name,
