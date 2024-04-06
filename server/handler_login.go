@@ -22,36 +22,44 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		},
 		Scopes: []string{"read:user"},
 	}
-
 	code := r.URL.Query().Get("code")
 	token, err := githubOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error exhanging auth code for token")
 		return
 	}
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token.AccessToken})
+	tc := oauth2.NewClient(context.Background(), ts)
+	client := github.NewClient(tc)
 
-	_, err = cfg.DB.GetUserByToken(r.Context(), token.AccessToken)
+	user, err := getGithubUser(token.AccessToken, client)
 	if err != nil {
-		err = cfg.addUserData(token.AccessToken)
-		if err != nil {
-			respondWithError(w, http.StatusInternalServerError, "Error fetching user data from github")
+		respondWithError(w, http.StatusInternalServerError, "Error getting user info from github")
+		return
+	}
+
+	_, err = cfg.DB.UpdateUserByGithubID(r.Context(), database.UpdateUserByGithubIDParams{
+		AccessToken: token.AccessToken,
+		GithubID:    int32(user.GetID()),
+	})
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = cfg.addUserData(token.AccessToken, user, client)
+			if err != nil {
+				respondWithError(w, http.StatusInternalServerError, "Error adding user data to database")
+				return
+			}
+		} else {
+			respondWithError(w, http.StatusInternalServerError, "Error updating user data in database")
 			return
 		}
 	}
-	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s", token.AccessToken)
+	redirectURL := fmt.Sprintf("http://localhost:5173/callback?access_token=%s&github_id=%d", token.AccessToken, user.GetID())
 	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
 
-func (cfg *apiConfig) addUserData(token string) error {
+func (cfg *apiConfig) addUserData(token string, user *github.User, client *github.Client) error {
 	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
-	user, _, err := client.Users.Get(ctx, "")
-	if err != nil {
-		return err
-	}
-	fmt.Println(user)
 	user_id, err := cfg.DB.CreateUser(ctx, database.CreateUserParams{
 		ID:          uuid.New(),
 		AccessToken: token,
@@ -67,12 +75,12 @@ func (cfg *apiConfig) addUserData(token string) error {
 		},
 		AvatarUrl: user.GetAvatarURL(),
 	})
-
 	if err != nil {
 		return err
 	}
+	fmt.Println(user_id)
 
-	repos, _, err := client.Repositories.List(ctx, user.GetLogin(), nil)
+	repos, err := getGithubUserRepos(user, client)
 	if err != nil {
 		return err
 	}
@@ -112,7 +120,6 @@ func (cfg *apiConfig) addUserData(token string) error {
 				return err
 			}
 		}
-
 	}
 	return nil
 }

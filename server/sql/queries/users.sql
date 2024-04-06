@@ -32,11 +32,12 @@ SET access_token = $1,
 SELECT *
 FROM users
 LIMIT 20;
--- name: GetUserByToken :one
+-- name: UpdateUserByGithubID :one
+UPDATE users
+SET access_token = $1
+WHERE github_id = $2
+RETURNING *;
+-- name: GetUserByGithubID :one
 SELECT *
 FROM users
-WHERE access_token = $1;
--- name: GetUserByID :one
-SELECT *
-FROM users
-WHERE id = $1;
+WHERE github_id = $1;

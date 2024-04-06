@@ -3,11 +3,10 @@ package main
 import (
 	"context"
 	"net/http"
+	"strconv"
 
-	"github.com/SamiZeinsAI/gitdev/internal/auth"
 	"github.com/SamiZeinsAI/gitdev/internal/database"
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 )
 
 func (cfg *apiConfig) handlerUsersGetAll(w http.ResponseWriter, r *http.Request) {
@@ -18,33 +17,21 @@ func (cfg *apiConfig) handlerUsersGetAll(w http.ResponseWriter, r *http.Request)
 	}
 	respondWithJSON(w, http.StatusOK, users)
 }
-func (cfg *apiConfig) handlerUsersGetSelf(w http.ResponseWriter, r *http.Request) {
-	token, err := auth.GetBearerToken(r.Header)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error getting bearer token from auth header in request")
-		return
-	}
-	dbUser, err := cfg.DB.GetUserByToken(r.Context(), token)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error getting user from database")
-		return
-	}
-	respondWithJSON(w, http.StatusOK, dbUser)
-}
+
 func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 	type returnVals struct {
-		UserInfo database.User
-		Repos    []Repo
+		Profile database.User
+		Repos   []Repo
 	}
 
-	user_id, err := uuid.FromBytes([]byte(chi.URLParam(r, "id")))
+	githubID, err := strconv.Atoi(chi.URLParam(r, "github_id"))
 
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error converting id string to uuid")
+		respondWithError(w, http.StatusInternalServerError, "Error converting github id string to int")
 		return
 	}
 
-	dbUser, err := cfg.DB.GetUserByID(r.Context(), user_id)
+	dbUser, err := cfg.DB.GetUserByGithubID(r.Context(), int32(githubID))
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error getting user from database")
 		return
@@ -66,8 +53,8 @@ func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 		repos = append(repos, repo)
 	}
 	resp := returnVals{
-		UserInfo: dbUser,
-		Repos:    repos,
+		Profile: dbUser,
+		Repos:   repos,
 	}
 	respondWithJSON(w, http.StatusOK, resp)
 }

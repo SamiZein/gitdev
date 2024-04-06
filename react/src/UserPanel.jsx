@@ -3,6 +3,7 @@ import AuthedBtn from "./AuthedBtn";
 import GithubStats from "./GithubStats";
 
 export default function UserPanel({user}) {
+    
 
     const postCollab = async () =>{
         console.log(user)

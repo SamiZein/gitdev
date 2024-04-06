@@ -114,14 +114,14 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 	return items, nil
 }
 
-const getUserByID = `-- name: GetUserByID :one
+const getUserByGithubID = `-- name: GetUserByGithubID :one
 SELECT id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
 FROM users
-WHERE id = $1
+WHERE github_id = $1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByID, id)
+func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByGithubID, githubID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -141,14 +141,20 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
-const getUserByToken = `-- name: GetUserByToken :one
-SELECT id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
-FROM users
-WHERE access_token = $1
+const updateUserByGithubID = `-- name: UpdateUserByGithubID :one
+UPDATE users
+SET access_token = $1
+WHERE github_id = $2
+RETURNING id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
 `
 
-func (q *Queries) GetUserByToken(ctx context.Context, accessToken string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByToken, accessToken)
+type UpdateUserByGithubIDParams struct {
+	AccessToken string
+	GithubID    int32
+}
+
+func (q *Queries) UpdateUserByGithubID(ctx context.Context, arg UpdateUserByGithubIDParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUserByGithubID, arg.AccessToken, arg.GithubID)
 	var i User
 	err := row.Scan(
 		&i.ID,
