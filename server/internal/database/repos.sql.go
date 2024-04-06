@@ -62,3 +62,43 @@ func (q *Queries) CreateRepo(ctx context.Context, arg CreateRepoParams) (uuid.UU
 	err := row.Scan(&id)
 	return id, err
 }
+
+const getUsersRepos = `-- name: GetUsersRepos :many
+SELECT id, created_at, updated_at, name, user_id, star_gazers, watchers, url, repo_created_at, repo_updated_at
+FROM repos
+WHERE user_id = $1
+`
+
+func (q *Queries) GetUsersRepos(ctx context.Context, userID uuid.UUID) ([]Repo, error) {
+	rows, err := q.db.QueryContext(ctx, getUsersRepos, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Repo
+	for rows.Next() {
+		var i Repo
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Name,
+			&i.UserID,
+			&i.StarGazers,
+			&i.Watchers,
+			&i.Url,
+			&i.RepoCreatedAt,
+			&i.RepoUpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

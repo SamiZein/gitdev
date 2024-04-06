@@ -20,6 +20,8 @@ INSERT INTO users (
         username,
         github_id,
         email,
+        followers,
+        following,
         panel_body,
         avatar_url
     )
@@ -31,7 +33,9 @@ VALUES (
         $5,
         $6,
         $7,
-        $8
+        $8,
+        $9,
+        $10
     )
 RETURNING id
 `
@@ -43,6 +47,8 @@ type CreateUserParams struct {
 	Username    string
 	GithubID    int32
 	Email       string
+	Followers   int32
+	Following   int32
 	PanelBody   sql.NullString
 	AvatarUrl   string
 }
@@ -55,6 +61,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UU
 		arg.Username,
 		arg.GithubID,
 		arg.Email,
+		arg.Followers,
+		arg.Following,
 		arg.PanelBody,
 		arg.AvatarUrl,
 	)
@@ -106,14 +114,41 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 	return items, nil
 }
 
-const getUserByGitHubID = `-- name: GetUserByGitHubID :one
+const getUserByID = `-- name: GetUserByID :one
 SELECT id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
 FROM users
-WHERE github_id = $1
+WHERE id = $1
 `
 
-func (q *Queries) GetUserByGitHubID(ctx context.Context, githubID int32) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByGitHubID, githubID)
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.AccessToken,
+		&i.Name,
+		&i.Username,
+		&i.GithubID,
+		&i.Email,
+		&i.Followers,
+		&i.Following,
+		&i.PanelBody,
+		&i.Role,
+		&i.AvatarUrl,
+	)
+	return i, err
+}
+
+const getUserByToken = `-- name: GetUserByToken :one
+SELECT id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
+FROM users
+WHERE access_token = $1
+`
+
+func (q *Queries) GetUserByToken(ctx context.Context, accessToken string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByToken, accessToken)
 	var i User
 	err := row.Scan(
 		&i.ID,

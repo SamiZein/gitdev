@@ -30,3 +30,34 @@ func (q *Queries) CreateLanguage(ctx context.Context, arg CreateLanguageParams) 
 	err := row.Scan(&id)
 	return id, err
 }
+
+const getReposLanguages = `-- name: GetReposLanguages :many
+SELECT languages.name
+FROM languages
+    JOIN repos_languages ON languages.id = repos_languages.language_id
+    JOIN repos ON repos_languages.repo_id = repos.id
+WHERE repos_languages.repo_id = $1
+`
+
+func (q *Queries) GetReposLanguages(ctx context.Context, repoID uuid.UUID) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getReposLanguages, repoID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

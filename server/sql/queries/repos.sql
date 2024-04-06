@@ -20,3 +20,7 @@ VALUES (
         $8
     )
 RETURNING id;
+-- name: GetUsersRepos :many
+SELECT *
+FROM repos
+WHERE user_id = $1;

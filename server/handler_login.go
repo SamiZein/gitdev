@@ -30,9 +30,9 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = cfg.DB.UpdateUserToken(r.Context(), token.AccessToken)
+	_, err = cfg.DB.GetUserByToken(r.Context(), token.AccessToken)
 	if err != nil {
-		err := cfg.addUserData(token.AccessToken)
+		err = cfg.addUserData(token.AccessToken)
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, "Error fetching user data from github")
 			return
@@ -49,9 +49,9 @@ func (cfg *apiConfig) addUserData(token string) error {
 	client := github.NewClient(tc)
 	user, _, err := client.Users.Get(ctx, "")
 	if err != nil {
-		fmt.Printf("Error retrieving user information: %v\n", err)
 		return err
 	}
+	fmt.Println(user)
 	user_id, err := cfg.DB.CreateUser(ctx, database.CreateUserParams{
 		ID:          uuid.New(),
 		AccessToken: token,
@@ -59,6 +59,8 @@ func (cfg *apiConfig) addUserData(token string) error {
 		Username:    user.GetLogin(),
 		GithubID:    int32(user.GetID()),
 		Email:       user.GetEmail(),
+		Followers:   int32(user.GetFollowers()),
+		Following:   int32(user.GetFollowing()),
 		PanelBody: sql.NullString{
 			String: user.GetBio(),
 			Valid:  true,

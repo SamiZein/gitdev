@@ -6,6 +6,8 @@ INSERT INTO users (
         username,
         github_id,
         email,
+        followers,
+        following,
         panel_body,
         avatar_url
     )
@@ -17,7 +19,9 @@ VALUES (
         $5,
         $6,
         $7,
-        $8
+        $8,
+        $9,
+        $10
     )
 RETURNING id;
 -- name: UpdateUserToken :exec
@@ -28,7 +32,11 @@ SET access_token = $1,
 SELECT *
 FROM users
 LIMIT 20;
--- name: GetUserByGitHubID :one
+-- name: GetUserByToken :one
 SELECT *
 FROM users
-WHERE github_id = $1;
+WHERE access_token = $1;
+-- name: GetUserByID :one
+SELECT *
+FROM users
+WHERE id = $1;

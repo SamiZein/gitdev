@@ -15,10 +15,10 @@ export default function GithubCallback() {
         headers: { Authorization: 'Bearer ' + accessToken }
       });
       if (response.ok) {
-          const data = await response.json();
-          login(data);
+        const data = await response.json();
+        login(data);
       } else {
-          throw new Error("Failed to fetch users");
+        throw new Error("Failed to fetch users");
       }
     } catch(error) {
         console.error("Error fetching users:", error);
