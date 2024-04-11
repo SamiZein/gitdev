@@ -60,6 +60,11 @@ func main() {
 	v1Router.Get("/auth/callback", apiCfg.handlerGitHubCallback)
 	v1Router.Get("/users", apiCfg.handlerUsersGetAll)
 	v1Router.Get("/users/{github_id}", apiCfg.handlerUsersGet)
+	v1Router.Patch("/users", apiCfg.middlewareAuth(apiCfg.handlerUsersUpdate))
+
+	v1Router.Post("/collabs", apiCfg.middlewareAuth(apiCfg.HandlerCollabsCreate))
+	v1Router.Get("/collabs", apiCfg.middlewareAuth(apiCfg.HandlerCollabsUserGet))
+	v1Router.Patch("/collabs", apiCfg.middlewareAuth(apiCfg.handlerUsersUpdate))
 
 	router.Mount("/v1", v1Router)
 
@@ -69,5 +74,4 @@ func main() {
 	}
 	log.Printf("Serving on port: %s\n", apiCfg.port)
 	log.Fatal(srv.ListenAndServe())
-
 }

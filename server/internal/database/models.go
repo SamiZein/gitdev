@@ -56,6 +56,16 @@ func (ns NullUserRole) Value() (driver.Value, error) {
 	return string(ns.UserRole), nil
 }
 
+type Collab struct {
+	ID            uuid.UUID
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	User1GithubID int32
+	User2GithubID int32
+	Message       sql.NullString
+	Pending       bool
+}
+
 type Language struct {
 	ID        uuid.UUID
 	CreatedAt time.Time

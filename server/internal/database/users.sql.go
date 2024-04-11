@@ -174,6 +174,32 @@ func (q *Queries) UpdateUserByGithubID(ctx context.Context, arg UpdateUserByGith
 	return i, err
 }
 
+const updateUserInfo = `-- name: UpdateUserInfo :exec
+UPDATE users
+SET name = $1,
+    username = $2,
+    email = $3,
+    panel_body = $4,
+    updated_at = CURRENT_TIMESTAMP
+`
+
+type UpdateUserInfoParams struct {
+	Name      string
+	Username  string
+	Email     string
+	PanelBody sql.NullString
+}
+
+func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserInfo,
+		arg.Name,
+		arg.Username,
+		arg.Email,
+		arg.PanelBody,
+	)
+	return err
+}
+
 const updateUserToken = `-- name: UpdateUserToken :exec
 UPDATE users
 SET access_token = $1,

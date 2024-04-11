@@ -19,10 +19,12 @@ export default function UserPanel({user}) {
                 </div>
             </div>
             <AuthedBtn onClick={() => postCollab()} text="Collab" />
-            <div>{user.PanelBody.Valid
+            <div>
+                {user.PanelBody.Valid
                 ?user.PanelBody.String
-                :"Empty"
-                }</div>
+                :""
+                }
+            </div>
             <GithubStats user={user} />
         </div>
     );

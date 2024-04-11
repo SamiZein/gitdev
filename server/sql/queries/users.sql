@@ -24,6 +24,13 @@ VALUES (
         $10
     )
 RETURNING id;
+-- name: UpdateUserInfo :exec
+UPDATE users
+SET name = $1,
+    username = $2,
+    email = $3,
+    panel_body = $4,
+    updated_at = CURRENT_TIMESTAMP;
 -- name: UpdateUserToken :exec
 UPDATE users
 SET access_token = $1,

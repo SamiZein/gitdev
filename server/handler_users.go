@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
+	"github.com/SamiZeinsAI/gitdev/internal/database"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -20,9 +23,8 @@ func (cfg *apiConfig) handlerUsersGetAll(w http.ResponseWriter, r *http.Request)
 func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 
 	githubID, err := strconv.Atoi(chi.URLParam(r, "github_id"))
-
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error converting github id string to int")
+		respondWithError(w, http.StatusBadRequest, "Error converting id string from request parameter to int")
 		return
 	}
 
@@ -50,4 +52,37 @@ func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 		user.Repos = append(user.Repos, repo)
 	}
 	respondWithJSON(w, http.StatusOK, user)
+}
+
+func (cfg *apiConfig) handlerUsersUpdate(w http.ResponseWriter, r *http.Request, user *database.User) {
+	type parameters struct {
+		Name      string `json:"name"`
+		UserName  string `json:"username"`
+		Email     string `json:"email"`
+		PanelBody string `json:"panel_body"`
+	}
+	params := parameters{}
+	err := json.NewDecoder(r.Body).Decode(&params)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error decoding json body from request")
+		return
+	}
+	panelBodyValid := true
+	if params.PanelBody == "" {
+		panelBodyValid = false
+	}
+	err = cfg.DB.UpdateUserInfo(r.Context(), database.UpdateUserInfoParams{
+		Name:     params.Name,
+		Username: params.UserName,
+		Email:    params.Email,
+		PanelBody: sql.NullString{
+			String: params.PanelBody,
+			Valid:  panelBodyValid,
+		},
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error updating user info in database")
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
