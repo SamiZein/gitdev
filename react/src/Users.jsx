@@ -71,7 +71,7 @@ export default function Users() {
           ): <p>No users to display</p>
           }
         </div>
-        <UserPanel user={selectedUser} />
+        <UserPanel panelUser={selectedUser} />
       </div>
     </div>
   );

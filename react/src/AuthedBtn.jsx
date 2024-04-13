@@ -1,6 +1,6 @@
 import { AuthContext } from "./AuthContext";
 import { useContext } from "react";
-import handleLogin from "./Utils";
+import {handleLogin} from "./Utils";
 
 export default function AuthedBtn({onClick, text}){
     const {isLoggedIn} = useContext(AuthContext);

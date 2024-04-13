@@ -78,8 +78,6 @@ func (cfg *apiConfig) addUserData(token string, user *github.User, client *githu
 	if err != nil {
 		return err
 	}
-	fmt.Println(user_id)
-
 	repos, err := getGithubUserRepos(user, client)
 	if err != nil {
 		return err

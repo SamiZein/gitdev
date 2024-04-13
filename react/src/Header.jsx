@@ -3,7 +3,7 @@ import NavBar  from "./NavBar"
 import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import Avatar from "./Avatar";
-import handleLogin from './Utils';
+import {handleLogin} from './Utils';
 import AuthedBtn from "./AuthedBtn";
 
 export default function Header() {

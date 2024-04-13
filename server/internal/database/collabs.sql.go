@@ -7,24 +7,24 @@ package database
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const createCollab = `-- name: CreateCollab :one
-INSERT INTO collabs (user1_id, user2_id)
-VALUES (
-        LEAST($1, $2),
-        GREATEST($1, $2)
-    )
+INSERT INTO collabs (id, user1_github_id, user2_github_id)
+VALUES ($1, $2, $3)
 RETURNING id, created_at, updated_at, user1_github_id, user2_github_id, message, pending
 `
 
 type CreateCollabParams struct {
-	Column1 interface{}
-	Column2 interface{}
+	ID            uuid.UUID
+	User1GithubID int32
+	User2GithubID int32
 }
 
 func (q *Queries) CreateCollab(ctx context.Context, arg CreateCollabParams) (Collab, error) {
-	row := q.db.QueryRowContext(ctx, createCollab, arg.Column1, arg.Column2)
+	row := q.db.QueryRowContext(ctx, createCollab, arg.ID, arg.User1GithubID, arg.User2GithubID)
 	var i Collab
 	err := row.Scan(
 		&i.ID,
@@ -41,8 +41,11 @@ func (q *Queries) CreateCollab(ctx context.Context, arg CreateCollabParams) (Col
 const getUsersCollabs = `-- name: GetUsersCollabs :many
 SELECT id, created_at, updated_at, user1_github_id, user2_github_id, message, pending
 FROM collabs
-WHERE user1_github_id = $1
-    OR user2_github_id = $1
+WHERE (
+        user1_github_id = $1
+        OR user2_github_id = $1
+    )
+    AND pending = FALSE
 `
 
 func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]Collab, error) {
@@ -79,20 +82,18 @@ func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]C
 const removeCollabsPendingStatus = `-- name: RemoveCollabsPendingStatus :one
 UPDATE collabs
 SET pending = FALSE
-WHERE (
-        user1_github_id = LEAST($1, $2)
-        AND user2_github_id = GREATEST($1, $2)
-    )
+WHERE user1_github_id = $1
+    AND user2_github_id = $2
 RETURNING id, created_at, updated_at, user1_github_id, user2_github_id, message, pending
 `
 
 type RemoveCollabsPendingStatusParams struct {
-	User1GithubID   int32
-	User1GithubID_2 int32
+	User1GithubID int32
+	User2GithubID int32
 }
 
 func (q *Queries) RemoveCollabsPendingStatus(ctx context.Context, arg RemoveCollabsPendingStatusParams) (Collab, error) {
-	row := q.db.QueryRowContext(ctx, removeCollabsPendingStatus, arg.User1GithubID, arg.User1GithubID_2)
+	row := q.db.QueryRowContext(ctx, removeCollabsPendingStatus, arg.User1GithubID, arg.User2GithubID)
 	var i Collab
 	err := row.Scan(
 		&i.ID,

@@ -2,28 +2,33 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/SamiZeinsAI/gitdev/internal/database"
-	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 )
 
 func (cfg *apiConfig) HandlerCollabsCreate(w http.ResponseWriter, r *http.Request, user *database.User) {
-	githubID, err := strconv.Atoi(chi.URLParam(r, "github_id"))
+	type parameter struct {
+		GithubID int `json:"github_id"`
+	}
+	params := parameter{}
+	err := json.NewDecoder(r.Body).Decode(&params)
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Error converting github id string to int")
+		respondWithError(w, http.StatusInternalServerError, "Error decoding json body")
 		return
 	}
 	collab, err := cfg.DB.RemoveCollabsPendingStatus(r.Context(), database.RemoveCollabsPendingStatusParams{
-		User1GithubID:   user.GithubID,
-		User1GithubID_2: int32(githubID),
+		User1GithubID: int32(params.GithubID),
+		User2GithubID: user.GithubID,
 	})
 	if err != nil {
 		if err == sql.ErrNoRows {
 			collab, err = cfg.DB.CreateCollab(r.Context(), database.CreateCollabParams{
-				Column1: user.GithubID,
-				Column2: githubID,
+				ID:            uuid.New(),
+				User1GithubID: user.GithubID,
+				User2GithubID: int32(params.GithubID),
 			})
 			if err != nil {
 				respondWithError(w, http.StatusInternalServerError, "Error creating collab")

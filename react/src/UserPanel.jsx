@@ -1,31 +1,37 @@
 import Avatar from "./Avatar";
 import AuthedBtn from "./AuthedBtn";
 import GithubStats from "./GithubStats";
+import { postData } from "./Utils";
+import { useContext } from "react";
+import { AuthContext } from "./AuthContext";
 
-export default function UserPanel({user}) {
+export default function UserPanel({panelUser}) {
+    const {user} = useContext(AuthContext)
     
 
-    const postCollab = async () =>{
-        console.log(user)
+    const postCollab = () =>{
+        postData("/v1/collabs",{
+            "github_id":panelUser.GithubID
+        },user.AccessToken)
     };
     return (
-        user &&
+        panelUser &&
         <div>
             <div className="flex">
-                <Avatar src={user.AvatarUrl} size="50px" />
+                <Avatar src={panelUser.AvatarUrl} size="50px" />
                 <div>
-                    <h1 className="text-xl">{user.Username}</h1>
-                    <h2>{user.Role}</h2>
+                    <h1 className="text-xl">{panelUser.Username}</h1>
+                    <h2>{panelUser.Role}</h2>
                 </div>
             </div>
             <AuthedBtn onClick={() => postCollab()} text="Collab" />
             <div>
-                {user.PanelBody.Valid
-                ?user.PanelBody.String
+                {panelUser.PanelBody.Valid
+                ?panelUser.PanelBody.String
                 :""
                 }
             </div>
-            <GithubStats user={user} />
+            <GithubStats user={panelUser} />
         </div>
     );
 }
