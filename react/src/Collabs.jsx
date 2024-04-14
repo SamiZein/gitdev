@@ -19,7 +19,7 @@ export default function Collabs() {
             <div>
                 {collabs?.length
                 ?   collabs.map((collab) => 
-                    <div>{collab.User1GithubID}</div>
+                    <div>{collab.User1Username}</div>
                 )
                 : "No collabs"
                 }

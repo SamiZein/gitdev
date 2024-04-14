@@ -46,6 +46,7 @@ func (cfg *apiConfig) HandlerCollabsUserGet(w http.ResponseWriter, r *http.Reque
 	collabs, err := cfg.DB.GetUsersCollabs(r.Context(), user.GithubID)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error getting collabs from database")
+		return
 	}
 	respondWithJSON(w, http.StatusOK, collabs)
 }

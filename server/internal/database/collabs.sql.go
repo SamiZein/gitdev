@@ -39,32 +39,47 @@ func (q *Queries) CreateCollab(ctx context.Context, arg CreateCollabParams) (Col
 }
 
 const getUsersCollabs = `-- name: GetUsersCollabs :many
-SELECT id, created_at, updated_at, user1_github_id, user2_github_id, message, pending
+SELECT user1.username AS user1_username,
+    user1.email AS user1_email,
+    user1.github_id AS user1_github_id,
+    user2.username AS user2_username,
+    user2.email AS user2_email,
+    user2.github_id AS user2_github_id
 FROM collabs
+    JOIN users user1 ON user1.github_id = collabs.user1_github_id
+    JOIN users user2 ON user2.github_id = collabs.user2_github_id
 WHERE (
-        user1_github_id = $1
-        OR user2_github_id = $1
+        collabs.user1_github_id = $1
+        OR collabs.user2_github_id = $1
     )
-    AND pending = FALSE
+    AND collabs.pending = FALSE
 `
 
-func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]Collab, error) {
+type GetUsersCollabsRow struct {
+	User1Username string
+	User1Email    string
+	User1GithubID int32
+	User2Username string
+	User2Email    string
+	User2GithubID int32
+}
+
+func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]GetUsersCollabsRow, error) {
 	rows, err := q.db.QueryContext(ctx, getUsersCollabs, user1GithubID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Collab
+	var items []GetUsersCollabsRow
 	for rows.Next() {
-		var i Collab
+		var i GetUsersCollabsRow
 		if err := rows.Scan(
-			&i.ID,
-			&i.CreatedAt,
-			&i.UpdatedAt,
+			&i.User1Username,
+			&i.User1Email,
 			&i.User1GithubID,
+			&i.User2Username,
+			&i.User2Email,
 			&i.User2GithubID,
-			&i.Message,
-			&i.Pending,
 		); err != nil {
 			return nil, err
 		}
