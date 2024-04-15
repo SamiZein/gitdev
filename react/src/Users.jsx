@@ -57,7 +57,7 @@ export default function Users() {
         <div>Your next collaborator could be right here.</div>
       </div>
       <div className="flex">
-        <div id="users-section" className="p-4 w-96">
+        <div id="users-section" className=" w-96">
           {users?.length
           ?  users.map((user) => 
             <UserCard 

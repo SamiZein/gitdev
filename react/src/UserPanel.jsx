@@ -16,19 +16,20 @@ export default function UserPanel({panelUser}) {
     };
     return (
         panelUser &&
-        <div>
-            <div className="flex">
+        <div className="ml-3">
+            <div className="flex mb-3">
                 <Avatar src={panelUser.AvatarUrl} size="50px" />
-                <div>
-                    <h1 className="text-xl">{panelUser.Username}</h1>
-                    <h2>{panelUser.Role}</h2>
+                <div className="ml-3">
+                    <h1 className="-mb-2 text-xl">{panelUser.Username}</h1>
+                    <h2 className="ml-2">{panelUser.Role}</h2>
                 </div>
             </div>
             <AuthedBtn onClick={() => postCollab()} text="Collab" />
             <div>
-                {panelUser.PanelBody.Valid
-                ?panelUser.PanelBody.String
-                :""
+                {
+                    panelUser.PanelBody.Valid
+                    ?panelUser.PanelBody.String
+                    :""
                 }
             </div>
             <GithubStats user={panelUser} />

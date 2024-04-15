@@ -7,6 +7,8 @@ package database
 
 import (
 	"context"
+	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -39,29 +41,34 @@ func (q *Queries) CreateCollab(ctx context.Context, arg CreateCollabParams) (Col
 }
 
 const getUsersCollabs = `-- name: GetUsersCollabs :many
-SELECT user1.username AS user1_username,
-    user1.email AS user1_email,
-    user1.github_id AS user1_github_id,
-    user2.username AS user2_username,
-    user2.email AS user2_email,
-    user2.github_id AS user2_github_id
-FROM collabs
-    JOIN users user1 ON user1.github_id = collabs.user1_github_id
-    JOIN users user2 ON user2.github_id = collabs.user2_github_id
-WHERE (
-        collabs.user1_github_id = $1
-        OR collabs.user2_github_id = $1
-    )
+SELECT users.id, users.created_at, users.updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url, collabs.id, collabs.created_at, collabs.updated_at, user1_github_id, user2_github_id, message, pending
+FROM users
+    JOIN collabs ON users.github_id = collabs.user2_github_id
+WHERE collabs.user1_github_id = $1
     AND collabs.pending = FALSE
 `
 
 type GetUsersCollabsRow struct {
-	User1Username string
-	User1Email    string
+	ID            uuid.UUID
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	AccessToken   string
+	Name          string
+	Username      string
+	GithubID      int32
+	Email         string
+	Followers     int32
+	Following     int32
+	PanelBody     sql.NullString
+	Role          UserRole
+	AvatarUrl     string
+	ID_2          uuid.UUID
+	CreatedAt_2   time.Time
+	UpdatedAt_2   time.Time
 	User1GithubID int32
-	User2Username string
-	User2Email    string
 	User2GithubID int32
+	Message       sql.NullString
+	Pending       bool
 }
 
 func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]GetUsersCollabsRow, error) {
@@ -74,12 +81,26 @@ func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]G
 	for rows.Next() {
 		var i GetUsersCollabsRow
 		if err := rows.Scan(
-			&i.User1Username,
-			&i.User1Email,
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.AccessToken,
+			&i.Name,
+			&i.Username,
+			&i.GithubID,
+			&i.Email,
+			&i.Followers,
+			&i.Following,
+			&i.PanelBody,
+			&i.Role,
+			&i.AvatarUrl,
+			&i.ID_2,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
 			&i.User1GithubID,
-			&i.User2Username,
-			&i.User2Email,
 			&i.User2GithubID,
+			&i.Message,
+			&i.Pending,
 		); err != nil {
 			return nil, err
 		}

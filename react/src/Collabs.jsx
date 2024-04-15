@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import { getData } from "./Utils";
+import CollabCard from "./CollabCard";
 
 export default function Collabs() {
     const {user} = useContext(AuthContext)
@@ -19,9 +20,9 @@ export default function Collabs() {
             <div>
                 {collabs?.length
                 ?   collabs.map((collab) => 
-                    <div>{collab.User1Username}</div>
-                )
-                : "No collabs"
+                    <CollabCard collab={collab} />
+                    )
+                :   "No collabs"
                 }
             </div>
         </>
