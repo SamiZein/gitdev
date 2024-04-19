@@ -12,33 +12,56 @@ import (
 )
 
 const createRepoLanguage = `-- name: CreateRepoLanguage :exec
-INSERT INTO repos_languages (
-        id,
-        repo_id,
-        language_id,
-        bytes
-    )
-VALUES (
-        $1,
-        $2,
-        $3,
-        $4
-    )
+INSERT INTO repos_languages (repo_id, language_id, bytes)
+VALUES ($1, $2, $3)
 `
 
 type CreateRepoLanguageParams struct {
-	ID         uuid.UUID
 	RepoID     uuid.UUID
 	LanguageID uuid.UUID
 	Bytes      int32
 }
 
 func (q *Queries) CreateRepoLanguage(ctx context.Context, arg CreateRepoLanguageParams) error {
-	_, err := q.db.ExecContext(ctx, createRepoLanguage,
-		arg.ID,
-		arg.RepoID,
-		arg.LanguageID,
-		arg.Bytes,
-	)
+	_, err := q.db.ExecContext(ctx, createRepoLanguage, arg.RepoID, arg.LanguageID, arg.Bytes)
 	return err
+}
+
+const getUserLanguagesBytes = `-- name: GetUserLanguagesBytes :many
+SELECT SUM(bytes) AS bytes,
+    languages.name
+FROM repos_languages
+    JOIN repos ON repos.id = repos_languages.repo_id
+    JOIN languages ON repos_languages.language_id = languages.id
+    JOIN users ON repos.user_id = users.id
+WHERE users.github_id = $1
+GROUP BY languages.name
+`
+
+type GetUserLanguagesBytesRow struct {
+	Bytes int64
+	Name  string
+}
+
+func (q *Queries) GetUserLanguagesBytes(ctx context.Context, githubID int32) ([]GetUserLanguagesBytesRow, error) {
+	rows, err := q.db.QueryContext(ctx, getUserLanguagesBytes, githubID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetUserLanguagesBytesRow
+	for rows.Next() {
+		var i GetUserLanguagesBytesRow
+		if err := rows.Scan(&i.Bytes, &i.Name); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

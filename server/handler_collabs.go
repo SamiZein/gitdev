@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/SamiZeinsAI/gitdev/internal/database"
-	"github.com/google/uuid"
 )
 
 func (cfg *apiConfig) HandlerCollabsCreate(w http.ResponseWriter, r *http.Request, user *database.User) {
@@ -26,7 +25,6 @@ func (cfg *apiConfig) HandlerCollabsCreate(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		if err == sql.ErrNoRows {
 			collab, err = cfg.DB.CreateCollab(r.Context(), database.CreateCollabParams{
-				ID:            uuid.New(),
 				User1GithubID: user.GithubID,
 				User2GithubID: int32(params.GithubID),
 			})

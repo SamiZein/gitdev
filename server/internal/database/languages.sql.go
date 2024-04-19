@@ -12,20 +12,18 @@ import (
 )
 
 const createLanguage = `-- name: CreateLanguage :one
-INSERT INTO languages (id, name)
-VALUES ($1, $2) ON CONFLICT (name) DO
-UPDATE
-SET name = EXCLUDED.name
+INSERT INTO languages (name, color)
+VALUES ($1, $2)
 RETURNING id
 `
 
 type CreateLanguageParams struct {
-	ID   uuid.UUID
-	Name string
+	Name  string
+	Color string
 }
 
 func (q *Queries) CreateLanguage(ctx context.Context, arg CreateLanguageParams) (uuid.UUID, error) {
-	row := q.db.QueryRowContext(ctx, createLanguage, arg.ID, arg.Name)
+	row := q.db.QueryRowContext(ctx, createLanguage, arg.Name, arg.Color)
 	var id uuid.UUID
 	err := row.Scan(&id)
 	return id, err

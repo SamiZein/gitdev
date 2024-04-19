@@ -8,13 +8,14 @@ package database
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-        id,
+        github_created_at,
         access_token,
         name,
         username,
@@ -23,7 +24,8 @@ INSERT INTO users (
         followers,
         following,
         panel_body,
-        avatar_url
+        avatar_url,
+        location
     )
 VALUES (
         $1,
@@ -35,27 +37,29 @@ VALUES (
         $7,
         $8,
         $9,
-        $10
+        $10,
+        $11
     )
-RETURNING id
+RETURNING github_id
 `
 
 type CreateUserParams struct {
-	ID          uuid.UUID
-	AccessToken string
-	Name        string
-	Username    string
-	GithubID    int32
-	Email       string
-	Followers   int32
-	Following   int32
-	PanelBody   sql.NullString
-	AvatarUrl   string
+	GithubCreatedAt time.Time
+	AccessToken     string
+	Name            string
+	Username        string
+	GithubID        int32
+	Email           string
+	Followers       int32
+	Following       int32
+	PanelBody       sql.NullString
+	AvatarUrl       string
+	Location        string
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UUID, error) {
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, error) {
 	row := q.db.QueryRowContext(ctx, createUser,
-		arg.ID,
+		arg.GithubCreatedAt,
 		arg.AccessToken,
 		arg.Name,
 		arg.Username,
@@ -65,14 +69,15 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (uuid.UU
 		arg.Following,
 		arg.PanelBody,
 		arg.AvatarUrl,
+		arg.Location,
 	)
-	var id uuid.UUID
-	err := row.Scan(&id)
-	return id, err
+	var github_id int32
+	err := row.Scan(&github_id)
+	return github_id, err
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
-SELECT id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
+SELECT id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url, location
 FROM users
 LIMIT 20
 `
@@ -90,6 +95,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 			&i.ID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.GithubCreatedAt,
 			&i.AccessToken,
 			&i.Name,
 			&i.Username,
@@ -100,6 +106,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 			&i.PanelBody,
 			&i.Role,
 			&i.AvatarUrl,
+			&i.Location,
 		); err != nil {
 			return nil, err
 		}
@@ -115,18 +122,40 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 }
 
 const getUserByGithubID = `-- name: GetUserByGithubID :one
-SELECT id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
+SELECT users.id, users.created_at, users.updated_at, users.github_created_at, users.access_token, users.name, users.username, users.github_id, users.email, users.followers, users.following, users.panel_body, users.role, users.avatar_url, users.location,
+    SUM(repos.*) AS num_repos
 FROM users
+    JOIN repos ON users.github_id = repos.user_github_id
 WHERE github_id = $1
 `
 
-func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (User, error) {
+type GetUserByGithubIDRow struct {
+	ID              uuid.UUID
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	GithubCreatedAt time.Time
+	AccessToken     string
+	Name            string
+	Username        string
+	GithubID        int32
+	Email           string
+	Followers       int32
+	Following       int32
+	PanelBody       sql.NullString
+	Role            UserRole
+	AvatarUrl       string
+	Location        string
+	NumRepos        int64
+}
+
+func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (GetUserByGithubIDRow, error) {
 	row := q.db.QueryRowContext(ctx, getUserByGithubID, githubID)
-	var i User
+	var i GetUserByGithubIDRow
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.GithubCreatedAt,
 		&i.AccessToken,
 		&i.Name,
 		&i.Username,
@@ -137,6 +166,8 @@ func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (User, 
 		&i.PanelBody,
 		&i.Role,
 		&i.AvatarUrl,
+		&i.Location,
+		&i.NumRepos,
 	)
 	return i, err
 }
@@ -145,7 +176,7 @@ const updateUserByGithubID = `-- name: UpdateUserByGithubID :one
 UPDATE users
 SET access_token = $1
 WHERE github_id = $2
-RETURNING id, created_at, updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url
+RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url, location
 `
 
 type UpdateUserByGithubIDParams struct {
@@ -160,6 +191,7 @@ func (q *Queries) UpdateUserByGithubID(ctx context.Context, arg UpdateUserByGith
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.GithubCreatedAt,
 		&i.AccessToken,
 		&i.Name,
 		&i.Username,
@@ -170,6 +202,7 @@ func (q *Queries) UpdateUserByGithubID(ctx context.Context, arg UpdateUserByGith
 		&i.PanelBody,
 		&i.Role,
 		&i.AvatarUrl,
+		&i.Location,
 	)
 	return i, err
 }

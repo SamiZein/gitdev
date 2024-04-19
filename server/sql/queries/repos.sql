@@ -1,8 +1,7 @@
 -- name: CreateRepo :one
 INSERT INTO repos (
-        id,
         name,
-        user_id,
+        user_github_id,
         star_gazers,
         watchers,
         url,
@@ -16,11 +15,10 @@ VALUES (
         $4,
         $5,
         $6,
-        $7,
-        $8
+        $7
     )
 RETURNING id;
 -- name: GetUsersRepos :many
 SELECT *
 FROM repos
-WHERE user_id = $1;
+WHERE user_github_id = $1;

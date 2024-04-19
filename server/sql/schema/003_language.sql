@@ -1,9 +1,10 @@
 -- +goose Up
 CREATE TABLE languages (
-    id UUID PRIMARY KEY,
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    name VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(255) NOT NULL UNIQUE,
+    color VARCHAR(16) NOT NULL
 );
 -- +goose Down
 DROP TABLE languages;

@@ -14,9 +14,8 @@ import (
 
 const createRepo = `-- name: CreateRepo :one
 INSERT INTO repos (
-        id,
         name,
-        user_id,
+        user_github_id,
         star_gazers,
         watchers,
         url,
@@ -30,16 +29,14 @@ VALUES (
         $4,
         $5,
         $6,
-        $7,
-        $8
+        $7
     )
 RETURNING id
 `
 
 type CreateRepoParams struct {
-	ID            uuid.UUID
 	Name          string
-	UserID        uuid.UUID
+	UserGithubID  int32
 	StarGazers    int32
 	Watchers      int32
 	Url           string
@@ -49,9 +46,8 @@ type CreateRepoParams struct {
 
 func (q *Queries) CreateRepo(ctx context.Context, arg CreateRepoParams) (uuid.UUID, error) {
 	row := q.db.QueryRowContext(ctx, createRepo,
-		arg.ID,
 		arg.Name,
-		arg.UserID,
+		arg.UserGithubID,
 		arg.StarGazers,
 		arg.Watchers,
 		arg.Url,
@@ -64,13 +60,13 @@ func (q *Queries) CreateRepo(ctx context.Context, arg CreateRepoParams) (uuid.UU
 }
 
 const getUsersRepos = `-- name: GetUsersRepos :many
-SELECT id, created_at, updated_at, name, user_id, star_gazers, watchers, url, repo_created_at, repo_updated_at
+SELECT id, created_at, updated_at, name, user_github_id, star_gazers, watchers, url, repo_created_at, repo_updated_at
 FROM repos
-WHERE user_id = $1
+WHERE user_github_id = $1
 `
 
-func (q *Queries) GetUsersRepos(ctx context.Context, userID uuid.UUID) ([]Repo, error) {
-	rows, err := q.db.QueryContext(ctx, getUsersRepos, userID)
+func (q *Queries) GetUsersRepos(ctx context.Context, userGithubID int32) ([]Repo, error) {
+	rows, err := q.db.QueryContext(ctx, getUsersRepos, userGithubID)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +79,7 @@ func (q *Queries) GetUsersRepos(ctx context.Context, userID uuid.UUID) ([]Repo, 
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Name,
-			&i.UserID,
+			&i.UserGithubID,
 			&i.StarGazers,
 			&i.Watchers,
 			&i.Url,

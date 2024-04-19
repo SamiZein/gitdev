@@ -71,6 +71,7 @@ type Language struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Name      string
+	Color     string
 }
 
 type Repo struct {
@@ -78,7 +79,7 @@ type Repo struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	Name          string
-	UserID        uuid.UUID
+	UserGithubID  int32
 	StarGazers    int32
 	Watchers      int32
 	Url           string
@@ -94,17 +95,19 @@ type ReposLanguage struct {
 }
 
 type User struct {
-	ID          uuid.UUID
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	AccessToken string
-	Name        string
-	Username    string
-	GithubID    int32
-	Email       string
-	Followers   int32
-	Following   int32
-	PanelBody   sql.NullString
-	Role        UserRole
-	AvatarUrl   string
+	ID              uuid.UUID
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	GithubCreatedAt time.Time
+	AccessToken     string
+	Name            string
+	Username        string
+	GithubID        int32
+	Email           string
+	Followers       int32
+	Following       int32
+	PanelBody       sql.NullString
+	Role            UserRole
+	AvatarUrl       string
+	Location        string
 }

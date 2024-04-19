@@ -8,7 +8,6 @@ import (
 
 	"github.com/SamiZeinsAI/gitdev/internal/database"
 	"github.com/google/go-github/github"
-	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 )
 
@@ -60,20 +59,21 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 
 func (cfg *apiConfig) addUserData(token string, user *github.User, client *github.Client) error {
 	ctx := context.Background()
-	user_id, err := cfg.DB.CreateUser(ctx, database.CreateUserParams{
-		ID:          uuid.New(),
-		AccessToken: token,
-		Name:        user.GetName(),
-		Username:    user.GetLogin(),
-		GithubID:    int32(user.GetID()),
-		Email:       user.GetEmail(),
-		Followers:   int32(user.GetFollowers()),
-		Following:   int32(user.GetFollowing()),
+	userGithubID, err := cfg.DB.CreateUser(ctx, database.CreateUserParams{
+		GithubCreatedAt: user.CreatedAt.Time,
+		AccessToken:     token,
+		Name:            user.GetName(),
+		Username:        user.GetLogin(),
+		GithubID:        int32(user.GetID()),
+		Email:           user.GetEmail(),
+		Followers:       int32(user.GetFollowers()),
+		Following:       int32(user.GetFollowing()),
 		PanelBody: sql.NullString{
 			String: user.GetBio(),
 			Valid:  true,
 		},
 		AvatarUrl: user.GetAvatarURL(),
+		Location:  user.GetLocation(),
 	})
 	if err != nil {
 		return err
@@ -84,9 +84,8 @@ func (cfg *apiConfig) addUserData(token string, user *github.User, client *githu
 	}
 	for _, repo := range repos {
 		repo_id, err := cfg.DB.CreateRepo(ctx, database.CreateRepoParams{
-			ID:            uuid.New(),
 			Name:          repo.GetName(),
-			UserID:        user_id,
+			UserGithubID:  int32(userGithubID),
 			StarGazers:    int32(repo.GetStargazersCount()),
 			Watchers:      int32(repo.GetWatchersCount()),
 			Url:           repo.GetURL(),
@@ -102,14 +101,12 @@ func (cfg *apiConfig) addUserData(token string, user *github.User, client *githu
 		}
 		for language, bytes := range languages {
 			language_id, err := cfg.DB.CreateLanguage(ctx, database.CreateLanguageParams{
-				ID:   uuid.New(),
 				Name: language,
 			})
 			if err != nil {
 				return err
 			}
 			err = cfg.DB.CreateRepoLanguage(ctx, database.CreateRepoLanguageParams{
-				ID:         uuid.New(),
 				RepoID:     repo_id,
 				LanguageID: language_id,
 				Bytes:      int32(bytes),

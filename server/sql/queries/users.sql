@@ -1,6 +1,6 @@
 -- name: CreateUser :one
 INSERT INTO users (
-        id,
+        github_created_at,
         access_token,
         name,
         username,
@@ -9,7 +9,8 @@ INSERT INTO users (
         followers,
         following,
         panel_body,
-        avatar_url
+        avatar_url,
+        location
     )
 VALUES (
         $1,
@@ -21,9 +22,10 @@ VALUES (
         $7,
         $8,
         $9,
-        $10
+        $10,
+        $11
     )
-RETURNING id;
+RETURNING github_id;
 -- name: UpdateUserInfo :exec
 UPDATE users
 SET name = $1,
@@ -45,6 +47,8 @@ SET access_token = $1
 WHERE github_id = $2
 RETURNING *;
 -- name: GetUserByGithubID :one
-SELECT *
+SELECT users.*,
+    SUM(repos.*) AS num_repos
 FROM users
+    JOIN repos ON users.github_id = repos.user_github_id
 WHERE github_id = $1;

@@ -14,19 +14,18 @@ import (
 )
 
 const createCollab = `-- name: CreateCollab :one
-INSERT INTO collabs (id, user1_github_id, user2_github_id)
-VALUES ($1, $2, $3)
+INSERT INTO collabs (user1_github_id, user2_github_id)
+VALUES ($1, $2)
 RETURNING id, created_at, updated_at, user1_github_id, user2_github_id, message, pending
 `
 
 type CreateCollabParams struct {
-	ID            uuid.UUID
 	User1GithubID int32
 	User2GithubID int32
 }
 
 func (q *Queries) CreateCollab(ctx context.Context, arg CreateCollabParams) (Collab, error) {
-	row := q.db.QueryRowContext(ctx, createCollab, arg.ID, arg.User1GithubID, arg.User2GithubID)
+	row := q.db.QueryRowContext(ctx, createCollab, arg.User1GithubID, arg.User2GithubID)
 	var i Collab
 	err := row.Scan(
 		&i.ID,
@@ -41,7 +40,7 @@ func (q *Queries) CreateCollab(ctx context.Context, arg CreateCollabParams) (Col
 }
 
 const getUsersCollabs = `-- name: GetUsersCollabs :many
-SELECT users.id, users.created_at, users.updated_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url, collabs.id, collabs.created_at, collabs.updated_at, user1_github_id, user2_github_id, message, pending
+SELECT users.id, users.created_at, users.updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, panel_body, role, avatar_url, location, collabs.id, collabs.created_at, collabs.updated_at, user1_github_id, user2_github_id, message, pending
 FROM users
     JOIN collabs ON users.github_id = collabs.user2_github_id
 WHERE collabs.user1_github_id = $1
@@ -49,26 +48,28 @@ WHERE collabs.user1_github_id = $1
 `
 
 type GetUsersCollabsRow struct {
-	ID            uuid.UUID
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	AccessToken   string
-	Name          string
-	Username      string
-	GithubID      int32
-	Email         string
-	Followers     int32
-	Following     int32
-	PanelBody     sql.NullString
-	Role          UserRole
-	AvatarUrl     string
-	ID_2          uuid.UUID
-	CreatedAt_2   time.Time
-	UpdatedAt_2   time.Time
-	User1GithubID int32
-	User2GithubID int32
-	Message       sql.NullString
-	Pending       bool
+	ID              uuid.UUID
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	GithubCreatedAt time.Time
+	AccessToken     string
+	Name            string
+	Username        string
+	GithubID        int32
+	Email           string
+	Followers       int32
+	Following       int32
+	PanelBody       sql.NullString
+	Role            UserRole
+	AvatarUrl       string
+	Location        string
+	ID_2            uuid.UUID
+	CreatedAt_2     time.Time
+	UpdatedAt_2     time.Time
+	User1GithubID   int32
+	User2GithubID   int32
+	Message         sql.NullString
+	Pending         bool
 }
 
 func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]GetUsersCollabsRow, error) {
@@ -84,6 +85,7 @@ func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]G
 			&i.ID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.GithubCreatedAt,
 			&i.AccessToken,
 			&i.Name,
 			&i.Username,
@@ -94,6 +96,7 @@ func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]G
 			&i.PanelBody,
 			&i.Role,
 			&i.AvatarUrl,
+			&i.Location,
 			&i.ID_2,
 			&i.CreatedAt_2,
 			&i.UpdatedAt_2,

@@ -4,6 +4,7 @@ import GithubStats from "./GithubStats";
 import { postData } from "./Utils";
 import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
+import UserLinguistics from "./UserLinguistics";
 
 export default function UserPanel({panelUser}) {
     const {user} = useContext(AuthContext)
@@ -33,6 +34,8 @@ export default function UserPanel({panelUser}) {
                 }
             </div>
             <GithubStats user={panelUser} />
+            <UserLinguistics githubID={panelUser.GithubID} />
+            
         </div>
     );
 }

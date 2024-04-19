@@ -1,6 +1,6 @@
 -- name: CreateCollab :one
-INSERT INTO collabs (id, user1_github_id, user2_github_id)
-VALUES ($1, $2, $3)
+INSERT INTO collabs (user1_github_id, user2_github_id)
+VALUES ($1, $2)
 RETURNING *;
 -- name: RemoveCollabsPendingStatus :one
 UPDATE collabs

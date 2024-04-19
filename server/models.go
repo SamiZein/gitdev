@@ -49,7 +49,7 @@ func databaseUserToUser(user database.User) User {
 type Repo struct {
 	ID            uuid.UUID
 	Name          string
-	UserID        uuid.UUID
+	UserGithubID  int32
 	StarGazers    int32
 	Watchers      int32
 	Url           string
@@ -62,7 +62,7 @@ func databaseRepoToRepo(repo *database.Repo) Repo {
 	return Repo{
 		ID:            repo.ID,
 		Name:          repo.Name,
-		UserID:        repo.UserID,
+		UserGithubID:  repo.UserGithubID,
 		StarGazers:    repo.StarGazers,
 		Watchers:      repo.Watchers,
 		Url:           repo.Url,
