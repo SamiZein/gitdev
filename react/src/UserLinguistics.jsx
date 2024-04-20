@@ -10,7 +10,9 @@ export default function UserLinguistics({githubID}) {
         });
     },[githubID])
     useEffect(() => {
-        setTotalBytes(languages.reduce((acc, language) => acc + language.Bytes, 0));
+        if (languages?.length) {
+            setTotalBytes(languages.reduce((acc, language) => acc + language.Bytes, 0));
+        }
     }, [languages]);
     return (
         languages?.length && 

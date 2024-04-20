@@ -100,8 +100,10 @@ func (cfg *apiConfig) addUserData(token string, user *github.User, client *githu
 			return err
 		}
 		for language, bytes := range languages {
+
 			language_id, err := cfg.DB.CreateLanguage(ctx, database.CreateLanguageParams{
-				Name: language,
+				Name:  language,
+				Color: randomColorHex(),
 			})
 			if err != nil {
 				return err

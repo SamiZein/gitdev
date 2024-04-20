@@ -61,7 +61,7 @@ func main() {
 	v1Router.Get("/users", apiCfg.handlerUsersGetAll)
 	v1Router.Get("/users/{github_id}", apiCfg.handlerUsersGet)
 	v1Router.Patch("/users", apiCfg.middlewareAuth(apiCfg.handlerUsersUpdate))
-	v1Router.Get("/users/languages/{github_id}", apiCfg.handlerUsersGetLanguageBytes)
+	v1Router.Get("/users/languages/{github_id}", apiCfg.handlerUsersLanguageBytesGet)
 
 	v1Router.Post("/collabs", apiCfg.middlewareAuth(apiCfg.HandlerCollabsCreate))
 	v1Router.Get("/collabs", apiCfg.middlewareAuth(apiCfg.HandlerCollabsUserGet))

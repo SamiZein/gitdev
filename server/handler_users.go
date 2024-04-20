@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -19,13 +20,14 @@ func (cfg *apiConfig) handlerUsersGetAll(w http.ResponseWriter, r *http.Request)
 	respondWithJSON(w, http.StatusOK, users)
 }
 
-func (cfg *apiConfig) handlerUsersGetLanguageBytes(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) handlerUsersLanguageBytesGet(w http.ResponseWriter, r *http.Request) {
 	githubID, err := strconv.Atoi(chi.URLParam(r, "github_id"))
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Error converting id string from request parameter to int")
 		return
 	}
 	languageBytes, err := cfg.DB.GetUserLanguagesBytes(r.Context(), int32(githubID))
+	fmt.Println(err)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error getting user language bytes from database")
 		return

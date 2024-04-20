@@ -1,6 +1,8 @@
 -- name: CreateLanguage :one
 INSERT INTO languages (name, color)
-VALUES ($1, $2)
+VALUES ($1, $2) ON CONFLICT (name) DO
+UPDATE
+SET name = EXCLUDED.name
 RETURNING id;
 -- name: GetReposLanguages :many
 SELECT languages.name

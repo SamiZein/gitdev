@@ -48,7 +48,8 @@ WHERE github_id = $2
 RETURNING *;
 -- name: GetUserByGithubID :one
 SELECT users.*,
-    SUM(repos.*) AS num_repos
+    COUNT(repos.*) AS num_repos
 FROM users
-    JOIN repos ON users.github_id = repos.user_github_id
-WHERE github_id = $1;
+    LEFT JOIN repos ON users.github_id = repos.user_github_id
+WHERE github_id = $1
+GROUP BY users.id;

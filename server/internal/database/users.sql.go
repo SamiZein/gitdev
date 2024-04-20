@@ -123,10 +123,11 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 
 const getUserByGithubID = `-- name: GetUserByGithubID :one
 SELECT users.id, users.created_at, users.updated_at, users.github_created_at, users.access_token, users.name, users.username, users.github_id, users.email, users.followers, users.following, users.panel_body, users.role, users.avatar_url, users.location,
-    SUM(repos.*) AS num_repos
+    COUNT(repos.*) AS num_repos
 FROM users
-    JOIN repos ON users.github_id = repos.user_github_id
+    LEFT JOIN repos ON users.github_id = repos.user_github_id
 WHERE github_id = $1
+GROUP BY users.id
 `
 
 type GetUserByGithubIDRow struct {

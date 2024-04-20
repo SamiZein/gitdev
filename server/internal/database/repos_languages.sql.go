@@ -29,18 +29,21 @@ func (q *Queries) CreateRepoLanguage(ctx context.Context, arg CreateRepoLanguage
 
 const getUserLanguagesBytes = `-- name: GetUserLanguagesBytes :many
 SELECT SUM(bytes) AS bytes,
-    languages.name
+    languages.name,
+    languages.color
 FROM repos_languages
     JOIN repos ON repos.id = repos_languages.repo_id
     JOIN languages ON repos_languages.language_id = languages.id
-    JOIN users ON repos.user_id = users.id
+    JOIN users ON repos.user_github_id = users.github_id
 WHERE users.github_id = $1
-GROUP BY languages.name
+GROUP BY languages.name,
+    languages.color
 `
 
 type GetUserLanguagesBytesRow struct {
 	Bytes int64
 	Name  string
+	Color string
 }
 
 func (q *Queries) GetUserLanguagesBytes(ctx context.Context, githubID int32) ([]GetUserLanguagesBytesRow, error) {
@@ -52,7 +55,7 @@ func (q *Queries) GetUserLanguagesBytes(ctx context.Context, githubID int32) ([]
 	var items []GetUserLanguagesBytesRow
 	for rows.Next() {
 		var i GetUserLanguagesBytesRow
-		if err := rows.Scan(&i.Bytes, &i.Name); err != nil {
+		if err := rows.Scan(&i.Bytes, &i.Name, &i.Color); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
