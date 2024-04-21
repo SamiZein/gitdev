@@ -11,4 +11,5 @@ FROM repos_languages
     JOIN users ON repos.user_github_id = users.github_id
 WHERE users.github_id = $1
 GROUP BY languages.name,
-    languages.color;
+    languages.color
+ORDER BY bytes DESC;

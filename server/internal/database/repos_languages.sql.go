@@ -38,6 +38,7 @@ FROM repos_languages
 WHERE users.github_id = $1
 GROUP BY languages.name,
     languages.color
+ORDER BY bytes DESC
 `
 
 type GetUserLanguagesBytesRow struct {
