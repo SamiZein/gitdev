@@ -8,7 +8,7 @@ INSERT INTO users (
         email,
         followers,
         following,
-        panel_body,
+        bio,
         avatar_url,
         location
     )
@@ -31,7 +31,7 @@ UPDATE users
 SET name = $1,
     username = $2,
     email = $3,
-    panel_body = $4,
+    bio = $4,
     updated_at = CURRENT_TIMESTAMP;
 -- name: UpdateUserToken :exec
 UPDATE users

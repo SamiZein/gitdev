@@ -12,7 +12,7 @@ CREATE TABLE users (
     email TEXT NOT NULL,
     followers INT NOT NULL,
     following INT NOT NULL,
-    panel_body TEXT,
+    bio TEXT NOT NULL,
     title VARCHAR(16) NOT NULL DEFAULT 'Fullstack',
     avatar_url TEXT NOT NULL,
     location TEXT NOT NULL

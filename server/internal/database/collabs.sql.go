@@ -40,7 +40,7 @@ func (q *Queries) CreateCollab(ctx context.Context, arg CreateCollabParams) (Col
 }
 
 const getUsersCollabs = `-- name: GetUsersCollabs :many
-SELECT users.id, users.created_at, users.updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, panel_body, title, avatar_url, location, collabs.id, collabs.created_at, collabs.updated_at, user1_github_id, user2_github_id, message, pending
+SELECT users.id, users.created_at, users.updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location, collabs.id, collabs.created_at, collabs.updated_at, user1_github_id, user2_github_id, message, pending
 FROM users
     JOIN collabs ON users.github_id = collabs.user2_github_id
 WHERE collabs.user1_github_id = $1
@@ -59,7 +59,7 @@ type GetUsersCollabsRow struct {
 	Email           string
 	Followers       int32
 	Following       int32
-	PanelBody       sql.NullString
+	Bio             string
 	Title           string
 	AvatarUrl       string
 	Location        string
@@ -93,7 +93,7 @@ func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]G
 			&i.Email,
 			&i.Followers,
 			&i.Following,
-			&i.PanelBody,
+			&i.Bio,
 			&i.Title,
 			&i.AvatarUrl,
 			&i.Location,

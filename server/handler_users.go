@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -53,10 +52,10 @@ func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 
 func (cfg *apiConfig) handlerUsersUpdate(w http.ResponseWriter, r *http.Request, user *database.User) {
 	type parameters struct {
-		Name      string `json:"name"`
-		UserName  string `json:"username"`
-		Email     string `json:"email"`
-		PanelBody string `json:"panel_body"`
+		Name     string `json:"name"`
+		UserName string `json:"username"`
+		Email    string `json:"email"`
+		Bio      string `json:"bio"`
 	}
 	params := parameters{}
 	err := json.NewDecoder(r.Body).Decode(&params)
@@ -64,18 +63,11 @@ func (cfg *apiConfig) handlerUsersUpdate(w http.ResponseWriter, r *http.Request,
 		respondWithError(w, http.StatusInternalServerError, "Error decoding json body from request")
 		return
 	}
-	panelBodyValid := true
-	if params.PanelBody == "" {
-		panelBodyValid = false
-	}
 	err = cfg.DB.UpdateUserInfo(r.Context(), database.UpdateUserInfoParams{
 		Name:     params.Name,
 		Username: params.UserName,
 		Email:    params.Email,
-		PanelBody: sql.NullString{
-			String: params.PanelBody,
-			Valid:  panelBodyValid,
-		},
+		Bio:      params.Bio,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error updating user info in database")

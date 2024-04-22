@@ -68,12 +68,9 @@ func (cfg *apiConfig) addUserData(token string, user *github.User, client *githu
 		Email:           user.GetEmail(),
 		Followers:       int32(user.GetFollowers()),
 		Following:       int32(user.GetFollowing()),
-		PanelBody: sql.NullString{
-			String: user.GetBio(),
-			Valid:  true,
-		},
-		AvatarUrl: user.GetAvatarURL(),
-		Location:  user.GetLocation(),
+		Bio:             user.GetBio(),
+		AvatarUrl:       user.GetAvatarURL(),
+		Location:        user.GetLocation(),
 	})
 	if err != nil {
 		return err

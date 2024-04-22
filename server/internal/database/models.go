@@ -61,7 +61,7 @@ type User struct {
 	Email           string
 	Followers       int32
 	Following       int32
-	PanelBody       sql.NullString
+	Bio             string
 	Title           string
 	AvatarUrl       string
 	Location        string

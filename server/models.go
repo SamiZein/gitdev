@@ -18,17 +18,13 @@ type User struct {
 	Email       string
 	Followers   int32
 	Following   int32
-	PanelBody   string
+	Bio         string
 	Title       string
 	AvatarUrl   string
 	Repos       []Repo
 }
 
 func databaseUserToUser(user database.User) User {
-	panelBody := ""
-	if user.PanelBody.Valid {
-		panelBody = user.PanelBody.String
-	}
 	return User{
 		Id:          user.ID,
 		CreatedAt:   user.CreatedAt,
@@ -40,7 +36,7 @@ func databaseUserToUser(user database.User) User {
 		Email:       user.Email,
 		Followers:   user.Followers,
 		Following:   user.Following,
-		PanelBody:   panelBody,
+		Bio:         user.Bio,
 		Title:       user.Title,
 		AvatarUrl:   user.AvatarUrl,
 	}

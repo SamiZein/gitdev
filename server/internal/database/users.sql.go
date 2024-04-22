@@ -7,7 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -23,7 +22,7 @@ INSERT INTO users (
         email,
         followers,
         following,
-        panel_body,
+        bio,
         avatar_url,
         location
     )
@@ -52,7 +51,7 @@ type CreateUserParams struct {
 	Email           string
 	Followers       int32
 	Following       int32
-	PanelBody       sql.NullString
+	Bio             string
 	AvatarUrl       string
 	Location        string
 }
@@ -67,7 +66,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, 
 		arg.Email,
 		arg.Followers,
 		arg.Following,
-		arg.PanelBody,
+		arg.Bio,
 		arg.AvatarUrl,
 		arg.Location,
 	)
@@ -77,7 +76,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, 
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
-SELECT id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, panel_body, title, avatar_url, location
+SELECT id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
 FROM users
 LIMIT 20
 `
@@ -103,7 +102,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 			&i.Email,
 			&i.Followers,
 			&i.Following,
-			&i.PanelBody,
+			&i.Bio,
 			&i.Title,
 			&i.AvatarUrl,
 			&i.Location,
@@ -122,7 +121,7 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
 }
 
 const getUserByGithubID = `-- name: GetUserByGithubID :one
-SELECT users.id, users.created_at, users.updated_at, users.github_created_at, users.access_token, users.name, users.username, users.github_id, users.email, users.followers, users.following, users.panel_body, users.title, users.avatar_url, users.location,
+SELECT users.id, users.created_at, users.updated_at, users.github_created_at, users.access_token, users.name, users.username, users.github_id, users.email, users.followers, users.following, users.bio, users.title, users.avatar_url, users.location,
     COUNT(repos.*) AS num_repos
 FROM users
     LEFT JOIN repos ON users.github_id = repos.user_github_id
@@ -142,7 +141,7 @@ type GetUserByGithubIDRow struct {
 	Email           string
 	Followers       int32
 	Following       int32
-	PanelBody       sql.NullString
+	Bio             string
 	Title           string
 	AvatarUrl       string
 	Location        string
@@ -164,7 +163,7 @@ func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (GetUse
 		&i.Email,
 		&i.Followers,
 		&i.Following,
-		&i.PanelBody,
+		&i.Bio,
 		&i.Title,
 		&i.AvatarUrl,
 		&i.Location,
@@ -177,7 +176,7 @@ const updateUserByGithubID = `-- name: UpdateUserByGithubID :one
 UPDATE users
 SET access_token = $1
 WHERE github_id = $2
-RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, panel_body, title, avatar_url, location
+RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
 `
 
 type UpdateUserByGithubIDParams struct {
@@ -200,7 +199,7 @@ func (q *Queries) UpdateUserByGithubID(ctx context.Context, arg UpdateUserByGith
 		&i.Email,
 		&i.Followers,
 		&i.Following,
-		&i.PanelBody,
+		&i.Bio,
 		&i.Title,
 		&i.AvatarUrl,
 		&i.Location,
@@ -213,15 +212,15 @@ UPDATE users
 SET name = $1,
     username = $2,
     email = $3,
-    panel_body = $4,
+    bio = $4,
     updated_at = CURRENT_TIMESTAMP
 `
 
 type UpdateUserInfoParams struct {
-	Name      string
-	Username  string
-	Email     string
-	PanelBody sql.NullString
+	Name     string
+	Username string
+	Email    string
+	Bio      string
 }
 
 func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) error {
@@ -229,7 +228,7 @@ func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) 
 		arg.Name,
 		arg.Username,
 		arg.Email,
-		arg.PanelBody,
+		arg.Bio,
 	)
 	return err
 }
