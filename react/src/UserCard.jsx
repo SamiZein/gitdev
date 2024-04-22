@@ -11,7 +11,7 @@ export default function UserCard({ user, skills, skillsRequired, skillsPreferred
                 />
                 <div className="ml-2">
                     <div className="-mb-1.5">{user.Username}</div>
-                    <div className="ml-1 text-xs">{user.Role}</div>
+                    <div className="ml-1 text-xs">{user.Title}</div>
                 </div>
             </div>
 

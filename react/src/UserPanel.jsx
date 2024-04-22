@@ -22,7 +22,7 @@ export default function UserPanel({panelUser}) {
                 <Avatar src={panelUser.AvatarUrl} size="50px" />
                 <div className="ml-3">
                     <h1 className="-mb-2 text-xl">{panelUser.Username}</h1>
-                    <h2 className="ml-2">{panelUser.Role}</h2>
+                    <h2 className="ml-2">{panelUser.Title}</h2>
                 </div>
             </div>
             <AuthedBtn onClick={() => postCollab()} text="Collab" />

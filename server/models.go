@@ -19,7 +19,7 @@ type User struct {
 	Followers   int32
 	Following   int32
 	PanelBody   string
-	Role        string
+	Title       string
 	AvatarUrl   string
 	Repos       []Repo
 }
@@ -41,7 +41,7 @@ func databaseUserToUser(user database.User) User {
 		Followers:   user.Followers,
 		Following:   user.Following,
 		PanelBody:   panelBody,
-		Role:        string(user.Role),
+		Title:       user.Title,
 		AvatarUrl:   user.AvatarUrl,
 	}
 }
