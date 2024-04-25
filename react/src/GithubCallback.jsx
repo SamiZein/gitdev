@@ -2,6 +2,7 @@ import { useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from "./AuthContext";
 import { API_BASE_URL } from "./config";
+import { getData } from './Utils';
 
 export default function GithubCallback() {
   const {login} = useContext(AuthContext);
@@ -25,11 +26,19 @@ export default function GithubCallback() {
         throw error;
     }
   };
-
   useEffect(() => {
-    fetchUser();
-    navigate('/');
-  }, [navigate]);
+    const fetchData = async () => {
+        try {
+            const userData = await getData(`/v1/users/${githubID}`);
+            login(userData);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+        navigate('/');
+    };
+    fetchData();
+  }, [navigate, githubID, login]);
+
   return (
     <></>
   );

@@ -26,13 +26,14 @@ VALUES (
         $11
     )
 RETURNING github_id;
--- name: UpdateUserInfo :exec
+-- name: UpdateUserInfo :one
 UPDATE users
 SET name = $1,
-    username = $2,
-    email = $3,
-    bio = $4,
-    updated_at = CURRENT_TIMESTAMP;
+    email = $2,
+    bio = $3,
+    title = $4,
+    updated_at = CURRENT_TIMESTAMP
+RETURNING *;
 -- name: UpdateUserToken :exec
 UPDATE users
 SET access_token = $1,

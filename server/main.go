@@ -40,17 +40,13 @@ func main() {
 		clientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
 	}
 
-	if apiCfg.port == "" {
-		apiCfg.port = "80"
-	}
-
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowedHeaders:   []string{"*"},
 		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: false,
+		AllowCredentials: true,
 		MaxAge:           300,
 	}))
 	v1Router := chi.NewRouter()

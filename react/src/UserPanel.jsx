@@ -10,11 +10,16 @@ export default function UserPanel({panelUser}) {
     const {user} = useContext(AuthContext)
     
 
-    const postCollab = () =>{
-        postData("/v1/collabs",{
-            "github_id":panelUser.GithubID
-        },user.AccessToken)
+    const postCollab = async () => {
+        try {
+            await postData("/v1/collabs", {
+                "github_id": panelUser.GithubID
+            }, user.AccessToken);
+        } catch (error) {
+            console.error("Error posting collab:", error);
+        }
     };
+    
     return (
         panelUser &&
         <div className="ml-3">
@@ -27,15 +32,10 @@ export default function UserPanel({panelUser}) {
             </div>
             <AuthedBtn onClick={() => postCollab()} text="Collab" />
             <div>
-                {
-                    panelUser.PanelBody.Valid
-                    ?panelUser.PanelBody.String
-                    :""
-                }
+                {panelUser.Bio}
             </div>
             <GithubStats user={panelUser} />
             <UserLinguistics githubID={panelUser.GithubID} />
-            
         </div>
     );
 }

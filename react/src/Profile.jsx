@@ -1,18 +1,22 @@
 import { useState, useContext, useEffect } from 'react';
 import Input from './Input';
 import { AuthContext } from './AuthContext';
+import { patchData } from './Utils';
+import './Profile.css';
 const Profile = () => {
-  const { user, isLoggedIn } = useContext(AuthContext);
+  const { user, login, isLoggedIn } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
-  const [location, setLocation] = useState('');
+  const [title, setTitle] = useState('');
 
   useEffect(() => {
-    if (isLoggedIn && user && user.Name && user.Bio && user.Location) {
+    if (isLoggedIn) {
       setName(user.Name);
       setBio(user.Bio);
-      setLocation(user.Location);
+      setTitle(user.Title);
+      setEmail(user.Email)
     } 
   },[user, isLoggedIn]);
 
@@ -20,22 +24,26 @@ const Profile = () => {
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async() => {
+    try {
+      const updatedUser = await patchData("/v1/users",{
+        "name": name,
+        "email": email,
+        "bio": bio,
+        "title": title
+      }, user?.AccessToken);
+      login(updatedUser);
+
+    } catch (error) {
+        console.error("Error updating user:", error);
+    }
     setIsEditing(false);
   };
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
+  
+  const handleInputChange = (e, setFunction) => {
+    setFunction(e.target.value);
   };
-
-  const handleBioChange = (e) => {
-    setBio(e.target.value);
-  };
-
-  const handleLocationChange = (e) => {
-    setLocation(e.target.value);
-  };
-
+  
   return (
     isLoggedIn &&
     <div className="container px-4 mx-auto my-10">
@@ -44,7 +52,7 @@ const Profile = () => {
           <h2 className="text-2xl font-semibold">Profile</h2>
           {isEditing ? (
             <button
-              className="px-4 py-2 font-semibold transition-colors duration-300 bg-green-600 rounded text-dark-text hover:bg-green-700"
+              className="px-4 py-2 font-semibold transition-colors duration-300 rounded bg-dark-success text-dark-success-text hover:bg-green-700"
               onClick={handleSaveClick}
             >
               Save
@@ -59,27 +67,42 @@ const Profile = () => {
           )}
         </div>
         <div className="space-y-2">
-          <Input 
+          <label className="block mb-2 font-semibold text-dark-text-secondary">Name</label>
+          <input
+            className="w-full h-10 px-3 py-2 border rounded bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
             type="text"
             value={name}
-            onChange={handleNameChange}
-            label="Name"
+            onChange={(e) => handleInputChange(e,setName)}
+            placeholder={name}
+            disabled={!isEditing}
+          />
+          
+          <label className="block mb-2 font-semibold text-dark-text-secondary">Email</label>
+          <input
+            className="w-full h-10 px-3 py-2 border rounded bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
+            type="text"
+            value={email}
+            onChange={(e) => handleInputChange(e,setEmail)}
+            placeholder={email}
             disabled={!isEditing}
           />
 
-          <Input 
-            type="text"
+          <label className="block mb-2 font-semibold text-dark-text-secondary">Bio</label>
+          <textarea
+            className="w-64 h-32 px-3 py-2 border rounded resize-none bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
             value={bio}
-            onChange={handleBioChange}
-            label="Bio"
+            onChange={(e) => handleInputChange(e,setBio)}
+            placeholder={bio}
             disabled={!isEditing}
           />
 
-          <Input 
+          <label className="block mb-2 font-semibold text-dark-text-secondary">Title</label>
+          <input
+            className="w-full h-10 px-3 py-2 border rounded bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
             type="text"
-            value={location}
-            onChange={handleLocationChange}
-            label="Location"
+            value={title}
+            onChange={(e) => handleInputChange(e,setTitle)}
+            placeholder={title}
             disabled={!isEditing}
           />
 

@@ -32,6 +32,28 @@ export async function postData(path = "", data = {}, accessToken="") {
     });
     return response.json();
 }
+
+export async function patchData(path = "", data = {}, accessToken = "") {
+  try {
+      const response = await fetch(API_BASE_URL + path, {
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + accessToken
+          },
+          body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+      console.log("Response from server:", responseData);
+
+      return responseData;
+  } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error;
+  }
+}
+
   
 
   
