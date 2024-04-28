@@ -172,64 +172,35 @@ func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (GetUse
 	return i, err
 }
 
-const updateUserByGithubID = `-- name: UpdateUserByGithubID :one
-UPDATE users
-SET access_token = $1
-WHERE github_id = $2
-RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
-`
-
-type UpdateUserByGithubIDParams struct {
-	AccessToken string
-	GithubID    int32
-}
-
-func (q *Queries) UpdateUserByGithubID(ctx context.Context, arg UpdateUserByGithubIDParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserByGithubID, arg.AccessToken, arg.GithubID)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.GithubCreatedAt,
-		&i.AccessToken,
-		&i.Name,
-		&i.Username,
-		&i.GithubID,
-		&i.Email,
-		&i.Followers,
-		&i.Following,
-		&i.Bio,
-		&i.Title,
-		&i.AvatarUrl,
-		&i.Location,
-	)
-	return i, err
-}
-
 const updateUserInfo = `-- name: UpdateUserInfo :one
 UPDATE users
-SET name = $1,
-    email = $2,
-    bio = $3,
-    title = $4,
+SET access_token = $1,
+    name = $2,
+    email = $3,
+    bio = $4,
+    title = $5,
     updated_at = CURRENT_TIMESTAMP
+WHERE github_id = $6
 RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
 `
 
 type UpdateUserInfoParams struct {
-	Name  string
-	Email string
-	Bio   string
-	Title string
+	AccessToken string
+	Name        string
+	Email       string
+	Bio         string
+	Title       string
+	GithubID    int32
 }
 
 func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, updateUserInfo,
+		arg.AccessToken,
 		arg.Name,
 		arg.Email,
 		arg.Bio,
 		arg.Title,
+		arg.GithubID,
 	)
 	var i User
 	err := row.Scan(
@@ -250,15 +221,4 @@ func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) 
 		&i.Location,
 	)
 	return i, err
-}
-
-const updateUserToken = `-- name: UpdateUserToken :exec
-UPDATE users
-SET access_token = $1,
-    updated_at = CURRENT_TIMESTAMP
-`
-
-func (q *Queries) UpdateUserToken(ctx context.Context, accessToken string) error {
-	_, err := q.db.ExecContext(ctx, updateUserToken, accessToken)
-	return err
 }

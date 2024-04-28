@@ -28,25 +28,18 @@ VALUES (
 RETURNING github_id;
 -- name: UpdateUserInfo :one
 UPDATE users
-SET name = $1,
-    email = $2,
-    bio = $3,
-    title = $4,
-    updated_at = CURRENT_TIMESTAMP
-RETURNING *;
--- name: UpdateUserToken :exec
-UPDATE users
 SET access_token = $1,
-    updated_at = CURRENT_TIMESTAMP;
+    name = $2,
+    email = $3,
+    bio = $4,
+    title = $5,
+    updated_at = CURRENT_TIMESTAMP
+WHERE github_id = $6
+RETURNING *;
 -- name: GetAllUsers :many
 SELECT *
 FROM users
 LIMIT 20;
--- name: UpdateUserByGithubID :one
-UPDATE users
-SET access_token = $1
-WHERE github_id = $2
-RETURNING *;
 -- name: GetUserByGithubID :one
 SELECT users.*,
     COUNT(repos.*) AS num_repos

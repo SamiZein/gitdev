@@ -64,10 +64,11 @@ func (cfg *apiConfig) handlerUsersUpdate(w http.ResponseWriter, r *http.Request,
 		return
 	}
 	dbUser, err := cfg.DB.UpdateUserInfo(r.Context(), database.UpdateUserInfoParams{
-		Name:  params.Name,
-		Email: params.Email,
-		Bio:   params.Bio,
-		Title: params.Title,
+		Name:     params.Name,
+		Email:    params.Email,
+		Bio:      params.Bio,
+		Title:    params.Title,
+		GithubID: user.GithubID,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error updating user info in database")
