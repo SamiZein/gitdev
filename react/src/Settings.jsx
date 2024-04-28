@@ -10,7 +10,7 @@ export default function Settings({exitSettings}) {
     <div className="fixed top-0 left-0 flex items-center justify-center w-full h-full bg-opacity-50 bg-dark-bg"
         onClick={exitSettings}
     >
-        <div className="p-6 rounded-lg shadow-lg bg-dark-bg"
+        <div className="absolute p-6 rounded-lg shadow-lg top-10 right-10 bg-dark-bg"
             onClick={(e)=>{e.stopPropagation()}}
         >
             <button onClick={()=>{
