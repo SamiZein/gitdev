@@ -28,14 +28,17 @@ export default function UserPanel({panelUser}) {
                 <div className="ml-3">
                     <h1 className="-mb-2 text-xl">{panelUser.Username}</h1>
                     <h2 className="ml-2">{panelUser.Title}</h2>
+                    
                 </div>
+
             </div>
+            <UserLinguistics githubID={panelUser.GithubID} />
             <AuthedBtn onClick={() => postCollab()} text="Collab" />
             <div>
                 {panelUser.Bio}
             </div>
             <GithubStats user={panelUser} />
-            <UserLinguistics githubID={panelUser.GithubID} />
+            
         </div>
     );
 }

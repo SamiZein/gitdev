@@ -37,7 +37,7 @@ func (cfg *apiConfig) handlerGitHubCallback(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	_, err = cfg.DB.UpdateUserInfo(r.Context(), database.UpdateUserInfoParams{
+	_, err = cfg.DB.UpdateUserToken(r.Context(), database.UpdateUserTokenParams{
 		AccessToken: token.AccessToken,
 		GithubID:    int32(user.GetID()),
 	})

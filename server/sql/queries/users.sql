@@ -26,19 +26,26 @@ VALUES (
         $11
     )
 RETURNING github_id;
--- name: UpdateUserInfo :one
+-- name: UpdateUserToken :one
 UPDATE users
 SET access_token = $1,
-    name = $2,
-    email = $3,
-    bio = $4,
-    title = $5,
     updated_at = CURRENT_TIMESTAMP
-WHERE github_id = $6
+WHERE github_id = $2
+RETURNING *;
+-- name: UpdateUserInfo :one
+UPDATE users
+SET name = $1,
+    email = $2,
+    bio = $3,
+    title = $4,
+    updated_at = CURRENT_TIMESTAMP
+WHERE github_id = $5
 RETURNING *;
 -- name: GetAllUsers :many
 SELECT *
 FROM users
+WHERE github_id != $1
+ORDER BY updated_at
 LIMIT 20;
 -- name: GetUserByGithubID :one
 SELECT users.*,

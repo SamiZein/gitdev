@@ -1,8 +1,9 @@
 import { TbHammer } from "react-icons/tb";
 import UserCard from "./UserCard";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { API_BASE_URL } from "./config";
 import UserPanel from "./UserPanel";
+import { AuthContext } from "./AuthContext";
 
 export default function Users() {
   const skills = ["UX", "UI", "React", "Tailwind"];
@@ -10,13 +11,24 @@ export default function Users() {
   const skillsPreferred = ["Go"];
   const [users, setUsers] = useState();
   const [selectedUser, setSelectedUser] = useState(null);
+  const { user, isLoggedIn} = useContext(AuthContext);
+
+
   useEffect(() => {
     fetchUsers(); 
   },[]);
 
   const fetchUsers = async () => {
     try{
-      const response = await fetch(`${API_BASE_URL}/v1/users`)
+      let githubID = "";
+      if (isLoggedIn){
+        githubID = user.GithubID
+      }
+      const response = await fetch(`${API_BASE_URL}/v1/users`,{
+        headers: {
+          Authorization: githubID.toString(),
+        },
+      });
       if (response.ok) {
           const data = await response.json();
           setUsers(data)
@@ -28,7 +40,6 @@ export default function Users() {
         throw error;
     }
   };
-
 
   const selectUser = async (user) => {
     try{
@@ -43,8 +54,6 @@ export default function Users() {
         console.error("Error fetching users:", error);
         throw error;
     }
-    
-    
   };
 
   return (

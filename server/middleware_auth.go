@@ -29,7 +29,7 @@ func (cfg *apiConfig) middlewareAuth(handler authedHandler) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		user, err := cfg.DB.UpdateUserInfo(r.Context(), database.UpdateUserInfoParams{
+		user, err := cfg.DB.UpdateUserToken(r.Context(), database.UpdateUserTokenParams{
 			AccessToken: token.AccessToken,
 			GithubID:    int32(githubUser.GetID()),
 		})

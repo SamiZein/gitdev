@@ -78,11 +78,13 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, 
 const getAllUsers = `-- name: GetAllUsers :many
 SELECT id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
 FROM users
+WHERE github_id != $1
+ORDER BY updated_at
 LIMIT 20
 `
 
-func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, getAllUsers)
+func (q *Queries) GetAllUsers(ctx context.Context, githubID int32) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getAllUsers, githubID)
 	if err != nil {
 		return nil, err
 	}
@@ -174,34 +176,67 @@ func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (GetUse
 
 const updateUserInfo = `-- name: UpdateUserInfo :one
 UPDATE users
-SET access_token = $1,
-    name = $2,
-    email = $3,
-    bio = $4,
-    title = $5,
+SET name = $1,
+    email = $2,
+    bio = $3,
+    title = $4,
     updated_at = CURRENT_TIMESTAMP
-WHERE github_id = $6
+WHERE github_id = $5
 RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
 `
 
 type UpdateUserInfoParams struct {
-	AccessToken string
-	Name        string
-	Email       string
-	Bio         string
-	Title       string
-	GithubID    int32
+	Name     string
+	Email    string
+	Bio      string
+	Title    string
+	GithubID int32
 }
 
 func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, updateUserInfo,
-		arg.AccessToken,
 		arg.Name,
 		arg.Email,
 		arg.Bio,
 		arg.Title,
 		arg.GithubID,
 	)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.GithubCreatedAt,
+		&i.AccessToken,
+		&i.Name,
+		&i.Username,
+		&i.GithubID,
+		&i.Email,
+		&i.Followers,
+		&i.Following,
+		&i.Bio,
+		&i.Title,
+		&i.AvatarUrl,
+		&i.Location,
+	)
+	return i, err
+}
+
+const updateUserToken = `-- name: UpdateUserToken :one
+UPDATE users
+SET access_token = $1,
+    updated_at = CURRENT_TIMESTAMP
+WHERE github_id = $2
+RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
+`
+
+type UpdateUserTokenParams struct {
+	AccessToken string
+	GithubID    int32
+}
+
+func (q *Queries) UpdateUserToken(ctx context.Context, arg UpdateUserTokenParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUserToken, arg.AccessToken, arg.GithubID)
 	var i User
 	err := row.Scan(
 		&i.ID,

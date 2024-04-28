@@ -11,7 +11,10 @@ import (
 )
 
 func (cfg *apiConfig) handlerUsersGetAll(w http.ResponseWriter, r *http.Request) {
-	users, err := cfg.DB.GetAllUsers(r.Context())
+	authHeader := r.Header.Get("Authorization")
+	githubID := 0
+	githubID, _ = strconv.Atoi(authHeader)
+	users, err := cfg.DB.GetAllUsers(r.Context(), int32(githubID))
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error retrieving users from database")
 		return

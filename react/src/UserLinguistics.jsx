@@ -16,7 +16,7 @@ export default function UserLinguistics({githubID}) {
     }, [languages]);
     return (
         languages?.length && 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mx-2">
             <div className="flex w-full h-3 overflow-hidden rounded-full">
                 {
                     languages.map((language) => (

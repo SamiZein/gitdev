@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var ErrNoAuthHeaderIncluded = errors.New("not auth header included in request")
+var ErrNoAuthHeaderIncluded = errors.New("no auth header included in request")
 
 func GetBearerToken(headers http.Header) (string, error) {
 	authHeader := headers.Get("Authorization")
