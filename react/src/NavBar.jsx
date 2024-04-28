@@ -11,7 +11,6 @@ export default function NavBar() {
                 <ul className="flex ml-4 space-x-4">
                     <NavItem icon={TbHammer} text="Developers" route="/" />
                     <NavItem icon={TbPlugConnected} text="Collabs" route="/collabs" />
-                    <NavItem icon={RiSettings3Line} text="Settings" route="/settings" />
                     <NavItem icon={RiSettings3Line} text="Profile" route="/profile" />
                 </ul>
             </nav>

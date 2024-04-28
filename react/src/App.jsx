@@ -1,7 +1,6 @@
 import Users from './Users.jsx'
 
 import {BrowserRouter,Routes,Route} from 'react-router-dom';
-import Settings from './Settings.jsx';
 import Collabs from './Collabs.jsx';
 import GithubCallback from './GithubCallback.jsx';
 import Header from './Header.jsx';
@@ -17,7 +16,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Users />}/>
             <Route path="/collabs" element={<Collabs />}/>
-            <Route path="/settings" element={<Settings />}/>
             <Route path="/profile" element={<Profile />}/>
             <Route path="/callback" element={<GithubCallback />}/>
           </Routes>

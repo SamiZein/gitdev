@@ -4,14 +4,16 @@ import { getData } from "./Utils";
 import CollabCard from "./CollabCard";
 
 export default function Collabs() {
-    const {user} = useContext(AuthContext)
+    const {user, isLoggedIn} = useContext(AuthContext)
     const [collabs, setCollabs] = useState()
 
 
     useEffect(() => {
-        getData("/v1/collabs",user?.AccessToken).then((data) => {
-            setCollabs(data)
-        }); 
+        if (isLoggedIn){
+            getData("/v1/collabs",user?.AccessToken).then((data) => {
+                setCollabs(data)
+            }); 
+        }
     },[]);
     return (
         user &&

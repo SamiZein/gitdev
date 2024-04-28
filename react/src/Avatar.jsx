@@ -1,4 +1,6 @@
-export default function Avatar({ src, size }) {
+
+
+export default function Avatar({ src, size, onClick }) {
     const avatarStyle = {
         width: size,
         height: size,
@@ -7,10 +9,13 @@ export default function Avatar({ src, size }) {
       };
     
       return (
-        <img
-          src={src}
-          alt="https://github.com/shadcn.png"
-          style={avatarStyle}
-        />
+        <div onClick={onClick}>
+          <img
+            src={src}
+            alt="https://github.com/shadcn.png"
+            style={avatarStyle}
+          />
+        </div>
+ 
       );
 };
