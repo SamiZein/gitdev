@@ -7,10 +7,6 @@ package database
 
 import (
 	"context"
-	"database/sql"
-	"time"
-
-	"github.com/google/uuid"
 )
 
 const createCollab = `-- name: CreateCollab :one
@@ -40,36 +36,31 @@ func (q *Queries) CreateCollab(ctx context.Context, arg CreateCollabParams) (Col
 }
 
 const getUsersCollabs = `-- name: GetUsersCollabs :many
-SELECT users.id, users.created_at, users.updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location, collabs.id, collabs.created_at, collabs.updated_at, user1_github_id, user2_github_id, message, pending
-FROM users
-    JOIN collabs ON users.github_id = collabs.user2_github_id
-WHERE collabs.user1_github_id = $1
+SELECT CASE
+        WHEN collabs.user1_github_id = $1 THEN user2.avatar_url
+        ELSE user1.avatar_url
+    END AS avatar_url,
+    CASE
+        WHEN collabs.user1_github_id = $1 THEN user2.email
+        ELSE user1.email
+    END AS email,
+    CASE
+        WHEN collabs.user1_github_id = $1 THEN user2.username
+        ELSE user1.username
+    END AS username
+FROM collabs
+    JOIN users AS user1 ON collabs.user1_github_id = user1.github_id
+    JOIN users AS user2 ON collabs.user2_github_id = user2.github_id
+WHERE (
+        $1 IN (collabs.user1_github_id, collabs.user2_github_id)
+    )
     AND collabs.pending = FALSE
 `
 
 type GetUsersCollabsRow struct {
-	ID              uuid.UUID
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	GithubCreatedAt time.Time
-	AccessToken     string
-	Name            string
-	Username        string
-	GithubID        int32
-	Email           string
-	Followers       int32
-	Following       int32
-	Bio             string
-	Title           string
-	AvatarUrl       string
-	Location        string
-	ID_2            uuid.UUID
-	CreatedAt_2     time.Time
-	UpdatedAt_2     time.Time
-	User1GithubID   int32
-	User2GithubID   int32
-	Message         sql.NullString
-	Pending         bool
+	AvatarUrl interface{}
+	Email     interface{}
+	Username  interface{}
 }
 
 func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]GetUsersCollabsRow, error) {
@@ -81,30 +72,7 @@ func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]G
 	var items []GetUsersCollabsRow
 	for rows.Next() {
 		var i GetUsersCollabsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.GithubCreatedAt,
-			&i.AccessToken,
-			&i.Name,
-			&i.Username,
-			&i.GithubID,
-			&i.Email,
-			&i.Followers,
-			&i.Following,
-			&i.Bio,
-			&i.Title,
-			&i.AvatarUrl,
-			&i.Location,
-			&i.ID_2,
-			&i.CreatedAt_2,
-			&i.UpdatedAt_2,
-			&i.User1GithubID,
-			&i.User2GithubID,
-			&i.Message,
-			&i.Pending,
-		); err != nil {
+		if err := rows.Scan(&i.AvatarUrl, &i.Email, &i.Username); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -121,8 +89,14 @@ func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]G
 const removeCollabsPendingStatus = `-- name: RemoveCollabsPendingStatus :one
 UPDATE collabs
 SET pending = FALSE
-WHERE user1_github_id = $1
-    AND user2_github_id = $2
+WHERE (
+        user1_github_id = $1
+        AND user2_github_id = $2
+    )
+    OR (
+        user1_github_id = $2
+        AND user2_github_id = $1
+    )
 RETURNING id, created_at, updated_at, user1_github_id, user2_github_id, message, pending
 `
 

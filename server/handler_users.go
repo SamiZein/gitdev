@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -29,7 +28,6 @@ func (cfg *apiConfig) handlerUsersLanguageBytesGet(w http.ResponseWriter, r *htt
 		return
 	}
 	languageBytes, err := cfg.DB.GetUserLanguagesBytes(r.Context(), int32(githubID))
-	fmt.Println(err)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error getting user language bytes from database")
 		return

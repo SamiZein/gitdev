@@ -13,7 +13,7 @@ CREATE TABLE users (
     followers INT NOT NULL,
     following INT NOT NULL,
     bio TEXT NOT NULL,
-    title VARCHAR(16) NOT NULL DEFAULT 'Fullstack',
+    title VARCHAR(64) NOT NULL DEFAULT 'Fullstack',
     avatar_url TEXT NOT NULL,
     location TEXT NOT NULL
 );

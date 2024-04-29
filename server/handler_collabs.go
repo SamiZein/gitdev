@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/SamiZeinsAI/gitdev/internal/database"
@@ -46,5 +47,6 @@ func (cfg *apiConfig) HandlerCollabsUserGet(w http.ResponseWriter, r *http.Reque
 		respondWithError(w, http.StatusInternalServerError, "Error getting collabs from database")
 		return
 	}
+	fmt.Println(collabs)
 	respondWithJSON(w, http.StatusOK, collabs)
 }

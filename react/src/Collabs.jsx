@@ -8,11 +8,17 @@ export default function Collabs() {
     const [collabs, setCollabs] = useState()
 
 
+
     useEffect(() => {
         if (isLoggedIn){
-            getData("/v1/collabs",user?.AccessToken).then((data) => {
-                setCollabs(data)
-            }); 
+            try{
+                getData("/v1/collabs",user?.AccessToken).then((data) => {
+                    setCollabs(data)
+                }); 
+            } catch(error) {
+                console.error("Error fetching collabs:", error);
+                throw error;
+            }
         }
     },[]);
     return (
@@ -21,8 +27,8 @@ export default function Collabs() {
             <div>Collabs</div>
             <div>
                 {collabs?.length
-                ?   collabs.map((collab) => 
-                    <CollabCard collab={collab} />
+                ?   collabs.map((collab, index) => 
+                    <CollabCard key={index} collab={collab} />
                     )
                 :   "No collabs"
                 }
