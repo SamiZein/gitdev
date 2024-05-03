@@ -61,7 +61,7 @@ export default function Users() {
       <div id="devs-header" className="pt-2 pl-2">
         <div className="flex">
           <TbHammer className="text-3xl place-self-center" />
-          <div className="text-2xl">Developers</div>
+          <h1 className="text-2xl">Developers</h1>
         </div>
         <div>Your next collaborator could be right here.</div>
       </div>

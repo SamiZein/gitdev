@@ -15,7 +15,6 @@ export default function Header() {
       setIsSettingsOpen(!isSettingsOpen);
     };
 
-  
     return (
       <div className="bg-dark-bg">
         <div className="flex items-center justify-between p-1">
