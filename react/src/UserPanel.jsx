@@ -34,9 +34,9 @@ export default function UserPanel({panelUser}) {
             </div>
             <UserLinguistics githubID={panelUser.GithubID} />
             <AuthedBtn onClick={() => postCollab()} text="Collab" />
-            <div>
+            <p className="text-base/loose">
                 {panelUser.Bio}
-            </div>
+            </p>
             <GithubStats user={panelUser} />
             
         </div>

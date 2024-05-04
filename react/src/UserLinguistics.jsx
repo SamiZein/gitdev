@@ -17,7 +17,10 @@ export default function UserLinguistics({githubID}) {
     return (
         languages?.length && 
         <div className="flex flex-col items-center mx-2">
-            <div className="flex w-full h-3 overflow-hidden rounded-full">
+            <div className="flex justify-end w-full text-xs text-dark-text-secondary">
+                <div className="mr-4">{totalBytes} bytes</div>
+            </div>
+            <div className="flex w-full h-2 overflow-hidden rounded-full">
                 {
                     languages.map((language) => (
                         <div
@@ -30,7 +33,8 @@ export default function UserLinguistics({githubID}) {
                     ))
                 }
             </div>
-            
+           
+
             <div className="flex flex-wrap w-2/3 space-x-2">
                 {
                     languages.map((language) => (
@@ -41,7 +45,7 @@ export default function UserLinguistics({githubID}) {
                                 style={{backgroundColor:  language.Color}}
                             />
                             <div>{language.Name}</div>
-                            <div className="text-gray-500">{((language.Bytes / totalBytes) * 100).toFixed(1)}%</div>
+                            <div className="text-dark-text-secondary">{((language.Bytes / totalBytes) * 100).toFixed(1)}%</div>
                         </div>
                     ))
                 }

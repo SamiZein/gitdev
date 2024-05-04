@@ -1,9 +1,9 @@
 import AuthedBtn from "./AuthedBtn";
 import { handleLogin } from "./Utils";
 
-export default function Login() {
+export default function Login({className}) {
     return (
-        <div className="p-1 pl-3">
+        <div className={className}>
             <h1>Login in with Github to use this functionality</h1>
             <AuthedBtn onClick={handleLogin} text="Sign in" />
         </div>

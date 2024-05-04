@@ -109,7 +109,7 @@ const Profile = () => {
               disabled={!isEditing}
             />
           </div>
-          : <Login />
+          : <Login  className="m-1 ml-4" />
         }
       </div>
     </div>
