@@ -41,7 +41,7 @@ export default function Collabs() {
                     :   "No collabs"
                     }
                 </div>
-                : <Login />
+                : <Login className="mt-2 ml-4" />
             }
         </div>
     );
