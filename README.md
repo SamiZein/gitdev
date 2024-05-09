@@ -2,6 +2,12 @@
 
 Gitdev is a developer collaboration website. It takes a developer-first approach for times when githubs' project-first approach may not be suitable. By requiring a github sign-in, Gitdev is able to display a users' github information in a way that is unique to the site, allowing for better assessment of potential collaborators. Try it out yourself and see you own user language breakdown!
 
+##Why
+
+- Why is a project-first approach the only popular option for developer collaboration
+- Why don't developer collaboration apps integrate github user info and build better visual representations of a developers proficiencies
+- Why do developers that want to team up in game jams and coding competitions not have a reasonable option
+
 ## Features
 
 - Sign in with GitHub
@@ -34,3 +40,11 @@ Gitdev is a developer collaboration website. It takes a developer-first approach
 ```
 git clone https://github.com/SamiZein/gitdev
 ```
+
+2. Install dependendencies
+
+```
+cd react && npm install
+```
+
+3. Run react app, go server, and postgres database
