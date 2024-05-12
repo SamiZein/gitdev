@@ -17,10 +17,10 @@ export default function Header() {
 
     return (
       <div className="bg-dark-bg">
-        <div className="flex items-center justify-between p-1">
+        <div className="flex justify-between p-1">
           <div className="flex items-center ml-3 space-x-3 font-semibold">
             <TbTrident className="text-4xl" />
-            {isLoggedIn && <div>{user.Username}</div>}
+            {isLoggedIn && <h1>{user.Username}</h1>}
           </div>
           <div>
             {isLoggedIn 

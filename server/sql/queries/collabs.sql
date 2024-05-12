@@ -30,7 +30,11 @@ SELECT CASE
     CASE
         WHEN collabs.user1_github_id = $1 THEN user2.location
         ELSE user1.location
-    END AS location
+    END AS location,
+    CASE
+        WHEN collabs.user1_github_id = $1 THEN user2.title
+        ELSE user1.title
+    END AS title
 FROM collabs
     JOIN users AS user1 ON collabs.user1_github_id = user1.github_id
     JOIN users AS user2 ON collabs.user2_github_id = user2.github_id

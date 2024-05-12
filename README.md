@@ -33,18 +33,25 @@ Gitdev is a developer collaboration website. It takes a developer-first approach
 - Go
 - PostgreSQL
 
-### Installation
+### Contributing
 
 1. Clone the repository
 
-```
+```bash
 git clone https://github.com/SamiZein/gitdev
+cd gitdev
 ```
 
 2. Install dependendencies
 
-```
-cd react && npm install
+```bash
+cd react && npm install && npm run dev && cd ..
 ```
 
-3. Run react app, go server, and postgres database
+3. Build go server
+
+```bash
+cd server && go build -o out && ./out && cd ..
+```
+
+4. Submit a pull request

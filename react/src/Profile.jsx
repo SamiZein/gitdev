@@ -1,5 +1,4 @@
 import { useState, useContext, useEffect } from 'react';
-import Input from './Input';
 import { AuthContext } from './AuthContext';
 import { patchData } from './Utils';
 import './Profile.css';
@@ -11,6 +10,7 @@ const Profile = () => {
   const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
   const [title, setTitle] = useState('');
+  const inputStyles = "w-full h-10 px-3 py-2 border rounded bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent";
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -72,7 +72,7 @@ const Profile = () => {
           <div className="space-y-2">
             <label className="block mb-2 font-semibold text-dark-text-secondary">Name</label>
             <input
-              className="w-full h-10 px-3 py-2 border rounded bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
+              className={inputStyles}
               type="text"
               value={name}
               onChange={(e) => handleInputChange(e,setName)}
@@ -82,7 +82,7 @@ const Profile = () => {
             
             <label className="block mb-2 font-semibold text-dark-text-secondary">Email</label>
             <input
-              className="w-full h-10 px-3 py-2 border rounded bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
+              className={inputStyles}
               type="text"
               value={email}
               onChange={(e) => handleInputChange(e,setEmail)}
@@ -101,7 +101,7 @@ const Profile = () => {
 
             <label className="block mb-2 font-semibold text-dark-text-secondary">Title</label>
             <input
-              className="w-full h-10 px-3 py-2 border rounded bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
+              className={inputStyles}
               type="text"
               value={title}
               onChange={(e) => handleInputChange(e,setTitle)}
