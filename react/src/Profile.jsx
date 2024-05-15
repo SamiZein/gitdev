@@ -3,6 +3,7 @@ import { AuthContext } from './AuthContext';
 import { patchData } from './Utils';
 import './Profile.css';
 import Login from './Login';
+import UserLinguistics from './UserLinguistics';
 const Profile = () => {
   const { user, login, isLoggedIn } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
@@ -70,6 +71,8 @@ const Profile = () => {
         </div>
         { isLoggedIn ?
           <div className="space-y-2">
+            <UserLinguistics githubID={user.GithubID} />
+
             <label className="block mb-2 font-semibold text-dark-text-secondary">Name</label>
             <input
               className={inputStyles}
