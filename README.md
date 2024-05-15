@@ -13,7 +13,8 @@ Gitdev is a developer collaboration website. It takes a developer-first approach
 - Sign in with GitHub
 - Automatic profile population based on GitHub data
 - Developers page shows new potential collaborators in a job board format
-  - Linguistics bar shows the distribution of programming languages used
+  - GitHub linguistics bar at the account level instead of at the repositiory level
+  - Shows other relevant stats from github
 - Collabs page shows the user all their collabs
 - Profile page shows the user their own info and allows them to update it
 
