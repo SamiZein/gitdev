@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getData } from "./Utils";
 
-export default function UserLinguistics({githubID}) {
+export default function UserLinguistics({className, githubID}) {
     const [languages, setLanguages] = useState([]);
     const [totalBytes, setTotalBytes] = useState(0);
     useEffect(() => {
@@ -16,7 +16,7 @@ export default function UserLinguistics({githubID}) {
     }, [languages]);
     return (
         languages?.length && 
-        <div className="flex flex-col items-center mx-2">
+        <div className={`${className} flex flex-col items-center`}>
             <div className="flex justify-end w-full text-xs text-dark-text-secondary">
                 <div className="mr-4">{totalBytes} bytes</div>
             </div>

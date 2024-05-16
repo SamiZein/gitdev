@@ -57,7 +57,7 @@ export default function Users() {
   };
 
   return (
-    <div>
+    <div className="size-full">
       <div id="devs-header" className="pt-2 pl-2">
         <div className="flex">
           <TbHammer className="text-3xl place-self-center" />
@@ -66,7 +66,9 @@ export default function Users() {
         <div>Your next collaborator could be right here.</div>
       </div>
       <div className="flex">
-        <div id="users-section" className=" w-96">
+        <div id="users-section"
+          className="min-w-80"
+        >
           {users?.length
           ?  users.map((user) => 
             <UserCard 

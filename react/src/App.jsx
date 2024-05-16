@@ -10,10 +10,10 @@ import Profile from './Profile.jsx';
 function App() {
   return (
     <main className="h-screen text-dark-text bg-dark-bg-secondary">
-      <BrowserRouter>
+      <BrowserRouter >
         <Header />
-        <div className="routes">
-          <Routes>
+        <div >
+          <Routes >
             <Route path="/" element={<Users />}/>
             <Route path="/collabs" element={<Collabs />}/>
             <Route path="/profile" element={<Profile />}/>

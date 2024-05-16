@@ -22,23 +22,23 @@ export default function UserPanel({panelUser}) {
     
     return (
         panelUser &&
-        <div className="ml-3">
+        <div className="flex flex-col items-start ml-3 min-w-80">
             <div className="flex mb-3">
                 <Avatar src={panelUser.AvatarUrl} size="50px" />
                 <div className="ml-3">
                     <h1 className="-mb-2 text-xl">{panelUser.Username}</h1>
                     <h2 className="ml-2">{panelUser.Title}</h2>
-                    
                 </div>
-
             </div>
-            <UserLinguistics githubID={panelUser.GithubID} />
+            <UserLinguistics className="mx-4" githubID={panelUser.GithubID} />
             <AuthedBtn onClick={() => postCollab()} text="Collab" />
-            <p className="text-base/loose">
+            <p className="m-2 text-base/loose">
                 {panelUser.Bio}
             </p>
-            <GithubStats user={panelUser} />
-            
+            <GithubStats 
+                className="mt-auto"
+                user={panelUser} 
+            />
         </div>
     );
 }
