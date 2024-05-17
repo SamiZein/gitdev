@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Avatar from "./Avatar";
-import Tag from "./Tag";
+import { GrLocation } from "react-icons/gr";
 
 export default function UserCard({ user, onClick }) {
     const [userActivity, setUserActivity] = useState("")
@@ -13,12 +13,13 @@ export default function UserCard({ user, onClick }) {
         const daysDifference = Math.floor(timeDifference / millisecondsPerDay);
         return daysDifference;
     };
-    useEffect((user)=>{
+    useEffect( () => {
         if(user == null){
             return
         }
-        days = daysSince(user.UpdatedAt);
-        msg = "Active " + days?daysSince(user.UpdatedAt)+" ago":" today";
+        const days = daysSince(user.UpdatedAt);
+        let msg = "Active "
+        msg += days>0?daysSince(user.UpdatedAt)+" days ago":" today";
         setUserActivity(msg);
     },[user]);
 
@@ -27,14 +28,20 @@ export default function UserCard({ user, onClick }) {
             <div className="flex items-center">
                 <Avatar 
                     src={user.AvatarUrl}
-                    size="20px"
+                    size="30px"
                 />
                 <div className="ml-2">
-                    <h1 className="-mb-1.5 text-lg">{user.Title}</h1>
-                    <h2 className="ml-1 text-sm">{user.Username}</h2>
+                    <h1 className="-mb-1.5 text-xl font-semibold">{user.Title}</h1>
+                    <h2 className="ml-2">{user.Username}</h2>
+                    {user.Location && 
+                    <div className="flex items-center text-sm">
+                        <GrLocation />
+                        <h3>{user.Location}</h3>
+                    </div>
+                    }
                 </div>
             </div>
-            <h3 className="text-xs"> </h3>
+            <h3 className="text-xs">{userActivity}</h3>
         </div>
     );
 }

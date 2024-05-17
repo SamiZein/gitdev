@@ -14,7 +14,7 @@ CREATE TABLE users (
     following INT NOT NULL,
     bio TEXT NOT NULL,
     title VARCHAR(64) NOT NULL DEFAULT 'Fullstack',
-    description VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL DEFAULT '',
     avatar_url VARCHAR(2048) NOT NULL,
     location VARCHAR(255) NOT NULL
 );

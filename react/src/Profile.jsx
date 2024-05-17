@@ -50,7 +50,7 @@ const Profile = () => {
     <div className="container px-4 mx-auto my-10">
       <div className="p-6 border rounded-lg border-dark-border bg-dark-bg">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold">Profile</h2>
+          <h2 className="text-4xl font-semibold">Profile</h2>
           { isLoggedIn && (
             isEditing ? (
             <button

@@ -63,6 +63,7 @@ type User struct {
 	Following       int32
 	Bio             string
 	Title           string
+	Description     string
 	AvatarUrl       string
 	Location        string
 }

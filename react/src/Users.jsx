@@ -6,9 +6,6 @@ import UserPanel from "./UserPanel";
 import { AuthContext } from "./AuthContext";
 
 export default function Users() {
-  const skills = ["UX", "UI", "React", "Tailwind"];
-  const skillsRequired = ["Backend"];
-  const skillsPreferred = ["Go"];
   const [users, setUsers] = useState();
   const [selectedUser, setSelectedUser] = useState(null);
   const { user, isLoggedIn} = useContext(AuthContext);
@@ -20,7 +17,7 @@ export default function Users() {
 
   const fetchUsers = async () => {
     try{
-      let githubID = "";
+      let githubID = 0;
       if (isLoggedIn){
         githubID = user.GithubID
       }
@@ -57,17 +54,17 @@ export default function Users() {
   };
 
   return (
-    <div className="size-full">
+    <div className="h-auto">
       <div id="devs-header" className="pt-2 pl-2">
-        <div className="flex">
-          <TbHammer className="text-3xl place-self-center" />
-          <h1 className="text-2xl">Developers</h1>
+        <div className="flex text-4xl font-semibold">
+          <TbHammer className="place-self-center" />
+          <h1>Developers</h1>
         </div>
         <div>Your next collaborator could be right here.</div>
       </div>
-      <div className="flex">
+      <div className="flex h-auto">
         <div id="users-section"
-          className="min-w-80"
+          className="h-full min-w-80"
         >
           {users?.length
           ?  users.map((user) => 
@@ -75,9 +72,6 @@ export default function Users() {
               onClick={() => selectUser(user)}
               key={user.ID}
               user={user}
-              skills={skills}
-              skillsRequired={skillsRequired}
-              skillsPreferred={skillsPreferred}
             />
           ): <p>No users to display</p>
           }

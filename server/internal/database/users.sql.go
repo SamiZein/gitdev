@@ -76,7 +76,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, 
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
-SELECT id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
+SELECT id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, description, avatar_url, location
 FROM users
 WHERE github_id != $1
 ORDER BY updated_at
@@ -106,6 +106,7 @@ func (q *Queries) GetAllUsers(ctx context.Context, githubID int32) ([]User, erro
 			&i.Following,
 			&i.Bio,
 			&i.Title,
+			&i.Description,
 			&i.AvatarUrl,
 			&i.Location,
 		); err != nil {
@@ -123,8 +124,10 @@ func (q *Queries) GetAllUsers(ctx context.Context, githubID int32) ([]User, erro
 }
 
 const getUserByGithubID = `-- name: GetUserByGithubID :one
-SELECT users.id, users.created_at, users.updated_at, users.github_created_at, users.access_token, users.name, users.username, users.github_id, users.email, users.followers, users.following, users.bio, users.title, users.avatar_url, users.location,
-    COUNT(repos.*) AS num_repos
+SELECT users.id, users.created_at, users.updated_at, users.github_created_at, users.access_token, users.name, users.username, users.github_id, users.email, users.followers, users.following, users.bio, users.title, users.description, users.avatar_url, users.location,
+    COUNT(repos.*) AS repos,
+    COALESCE(SUM(repos.star_gazers), 0) AS stars,
+    COALESCE(SUM(repos.watchers), 0) AS watchers
 FROM users
     LEFT JOIN repos ON users.github_id = repos.user_github_id
 WHERE github_id = $1
@@ -145,9 +148,12 @@ type GetUserByGithubIDRow struct {
 	Following       int32
 	Bio             string
 	Title           string
+	Description     string
 	AvatarUrl       string
 	Location        string
-	NumRepos        int64
+	Repos           int64
+	Stars           interface{}
+	Watchers        interface{}
 }
 
 func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (GetUserByGithubIDRow, error) {
@@ -167,9 +173,12 @@ func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (GetUse
 		&i.Following,
 		&i.Bio,
 		&i.Title,
+		&i.Description,
 		&i.AvatarUrl,
 		&i.Location,
-		&i.NumRepos,
+		&i.Repos,
+		&i.Stars,
+		&i.Watchers,
 	)
 	return i, err
 }
@@ -182,7 +191,7 @@ SET name = $1,
     title = $4,
     updated_at = CURRENT_TIMESTAMP
 WHERE github_id = $5
-RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
+RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, description, avatar_url, location
 `
 
 type UpdateUserInfoParams struct {
@@ -216,6 +225,7 @@ func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) 
 		&i.Following,
 		&i.Bio,
 		&i.Title,
+		&i.Description,
 		&i.AvatarUrl,
 		&i.Location,
 	)
@@ -227,7 +237,7 @@ UPDATE users
 SET access_token = $1,
     updated_at = CURRENT_TIMESTAMP
 WHERE github_id = $2
-RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, avatar_url, location
+RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, description, avatar_url, location
 `
 
 type UpdateUserTokenParams struct {
@@ -252,6 +262,7 @@ func (q *Queries) UpdateUserToken(ctx context.Context, arg UpdateUserTokenParams
 		&i.Following,
 		&i.Bio,
 		&i.Title,
+		&i.Description,
 		&i.AvatarUrl,
 		&i.Location,
 	)

@@ -49,7 +49,9 @@ ORDER BY updated_at
 LIMIT 20;
 -- name: GetUserByGithubID :one
 SELECT users.*,
-    COUNT(repos.*) AS num_repos
+    COUNT(repos.*) AS repos,
+    COALESCE(SUM(repos.star_gazers), 0) AS stars,
+    COALESCE(SUM(repos.watchers), 0) AS watchers
 FROM users
     LEFT JOIN repos ON users.github_id = repos.user_github_id
 WHERE github_id = $1

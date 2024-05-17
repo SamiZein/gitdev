@@ -5,6 +5,7 @@ import { postData } from "./Utils";
 import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import UserLinguistics from "./UserLinguistics";
+import { GrLocation } from "react-icons/gr";
 
 export default function UserPanel({panelUser}) {
     const {user} = useContext(AuthContext)
@@ -22,12 +23,18 @@ export default function UserPanel({panelUser}) {
     
     return (
         panelUser &&
-        <div className="flex flex-col items-start ml-3 min-w-80">
+        <div className="ml-3 min-w-80">
             <div className="flex mb-3">
                 <Avatar src={panelUser.AvatarUrl} size="50px" />
                 <div className="ml-3">
                     <h1 className="-mb-2 text-xl">{panelUser.Username}</h1>
                     <h2 className="ml-2">{panelUser.Title}</h2>
+                    {panelUser.Location && 
+                    <div className="flex items-center text-sm">
+                        <GrLocation />
+                        <h3>{panelUser.Location}</h3>
+                    </div>
+                    }                   
                 </div>
             </div>
             <UserLinguistics className="mx-4" githubID={panelUser.GithubID} />

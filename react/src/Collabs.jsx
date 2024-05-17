@@ -26,9 +26,9 @@ export default function Collabs() {
     return (
         <div>
             <div id="collabs-header" className="pt-2 pl-2">
-                <div className="flex">
-                    <TbPlugConnected className="text-3xl place-self-center" />
-                    <h1 className="text-2xl">Collabs</h1>
+                <div className="flex text-4xl font-semibold">
+                    <TbPlugConnected className="place-self-center" />
+                    <h1>Collabs</h1>
                 </div>
             </div>
             {

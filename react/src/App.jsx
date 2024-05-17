@@ -12,14 +12,12 @@ function App() {
     <main className="h-screen text-dark-text bg-dark-bg-secondary">
       <BrowserRouter >
         <Header />
-        <div >
           <Routes >
             <Route path="/" element={<Users />}/>
             <Route path="/collabs" element={<Collabs />}/>
             <Route path="/profile" element={<Profile />}/>
             <Route path="/callback" element={<GithubCallback />}/>
           </Routes>
-        </div>
       </BrowserRouter>
     </main>
   )
