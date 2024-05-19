@@ -38,8 +38,10 @@ SET name = $1,
     email = $2,
     bio = $3,
     title = $4,
+    linkedin_url = $5,
+    twitter_url = $6,
     updated_at = CURRENT_TIMESTAMP
-WHERE github_id = $5
+WHERE github_id = $7
 RETURNING *;
 -- name: GetAllUsers :many
 SELECT *

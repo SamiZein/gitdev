@@ -1,4 +1,5 @@
 import Avatar from "./Avatar";
+import { GrLocation } from "react-icons/gr";
 
 export default function CollabCard({collab}) {
     return(
@@ -8,11 +9,15 @@ export default function CollabCard({collab}) {
                 <div>
                     <h1>{collab.Username}</h1>
                     <h1>{collab.Title}</h1>
+                    {user.Location && 
+                    <div className="flex items-center text-sm">
+                        <GrLocation />
+                        <h3>{user.Location}</h3>
+                    </div>
+                    }
                 </div>
-                
+                <h2>{collab.Email}</h2>
             </div>
-            <h2>{collab.Email}</h2>
-            <h2>{collab.Location}</h2>
         </div>
     );
 };

@@ -4,22 +4,28 @@ import { patchData } from './Utils';
 import './Profile.css';
 import Login from './Login';
 import UserLinguistics from './UserLinguistics';
-const Profile = () => {
+
+export const Profile = () => {
   const { user, login, isLoggedIn } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
   const [title, setTitle] = useState('');
+  const [linkedIn, setLinkedIn] = useState('');
+  const [twitter, setTwitter] = useState('');
   const inputStyles = "w-full h-10 px-3 py-2 border rounded bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent";
+  const labelStyles = "block mb-2 font-semibold text-dark-text-secondary";
 
   useEffect(() => {
-    if (isLoggedIn) {
-      setName(user.Name);
-      setBio(user.Bio);
-      setTitle(user.Title);
-      setEmail(user.Email)
-    } 
+    if (!isLoggedIn) return;
+    setName(user.Name);
+    setBio(user.Bio);
+    setTitle(user.Title);
+    setEmail(user.Email);
+    setLinkedIn(user.LinkedinUrl);
+    setTwitter(user.TwitterUrl);
+
   },[user, isLoggedIn]);
 
   const handleEditClick = () => {
@@ -32,7 +38,9 @@ const Profile = () => {
         "name": name,
         "email": email,
         "bio": bio,
-        "title": title
+        "title": title,
+        "linkedin": linkedIn,
+        "twitter": twitter
       }, user?.AccessToken);
       login(updatedUser);
 
@@ -45,10 +53,17 @@ const Profile = () => {
   const handleInputChange = (e, setFunction) => {
     setFunction(e.target.value);
   };
-  
+
+  const fields = [
+    { label: "Name", name: "name", value: name, setFunction: setName },
+    { label: "Title", name: "title", value: title, setFunction: setTitle },
+    { label: "Email", name: "email", value: email, setFunction: setEmail },
+    { label: "LinkedIn", name: "linkedin", value: linkedIn, setFunction: setLinkedIn },
+    { label: "Twitter", name: "twitter", value: twitter, setFunction: setTwitter },
+  ];
+
   return (
-    <div className="container px-4 mx-auto my-10">
-      <div className="p-6 border rounded-lg border-dark-border bg-dark-bg">
+      <div className="p-6 m-4 border rounded-lg border-dark-border bg-dark-bg">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-4xl font-semibold">Profile</h2>
           { isLoggedIn && (
@@ -72,50 +87,30 @@ const Profile = () => {
         { isLoggedIn ?
           <div className="space-y-2">
             <UserLinguistics githubID={user.GithubID} />
-
-            <label className="block mb-2 font-semibold text-dark-text-secondary">Name</label>
-            <input
-              className={inputStyles}
-              type="text"
-              value={name}
-              onChange={(e) => handleInputChange(e,setName)}
-              placeholder={name}
-              disabled={!isEditing}
-            />
-            
-            <label className="block mb-2 font-semibold text-dark-text-secondary">Email</label>
-            <input
-              className={inputStyles}
-              type="text"
-              value={email}
-              onChange={(e) => handleInputChange(e,setEmail)}
-              placeholder={email}
-              disabled={!isEditing}
-            />
-
-            <label className="block mb-2 font-semibold text-dark-text-secondary">Bio</label>
+            {fields.map(({ label, name, value, setFunction }) => (
+              <div key={name}>
+                <label className={labelStyles}>{label}</label>
+                <input
+                  className={inputStyles}
+                  type="text"
+                  name={name}
+                  value={value}
+                  onChange={(e) => handleInputChange(e, setFunction)}
+                  disabled={!isEditing}
+                />
+              </div>
+            ))}
+            <label className={labelStyles}>Bio</label>
             <textarea
-              className="w-64 h-32 px-3 py-2 border rounded resize-none bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
+              className="w-full h-32 px-3 py-2 border rounded resize-none bg-dark-bg border-dark-border focus:outline-none focus:border-dark-accent"
               value={bio}
-              onChange={(e) => handleInputChange(e,setBio)}
-              placeholder={bio}
-              disabled={!isEditing}
-            />
-
-            <label className="block mb-2 font-semibold text-dark-text-secondary">Title</label>
-            <input
-              className={inputStyles}
-              type="text"
-              value={title}
-              onChange={(e) => handleInputChange(e,setTitle)}
-              placeholder={title}
+              onChange={(e) => handleInputChange(e, setBio)}
               disabled={!isEditing}
             />
           </div>
           : <Login  className="m-1 ml-4" />
         }
       </div>
-    </div>
   );
 };
 

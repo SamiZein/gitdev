@@ -58,6 +58,9 @@ type User struct {
 	Name            string
 	Username        string
 	GithubID        int32
+	GithubUrl       string
+	LinkedinUrl     string
+	TwitterUrl      string
 	Email           string
 	Followers       int32
 	Following       int32

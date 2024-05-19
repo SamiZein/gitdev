@@ -76,7 +76,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (int32, 
 }
 
 const getAllUsers = `-- name: GetAllUsers :many
-SELECT id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, description, avatar_url, location
+SELECT id, created_at, updated_at, github_created_at, access_token, name, username, github_id, github_url, linkedin_url, twitter_url, email, followers, following, bio, title, description, avatar_url, location
 FROM users
 WHERE github_id != $1
 ORDER BY updated_at
@@ -101,6 +101,9 @@ func (q *Queries) GetAllUsers(ctx context.Context, githubID int32) ([]User, erro
 			&i.Name,
 			&i.Username,
 			&i.GithubID,
+			&i.GithubUrl,
+			&i.LinkedinUrl,
+			&i.TwitterUrl,
 			&i.Email,
 			&i.Followers,
 			&i.Following,
@@ -124,7 +127,7 @@ func (q *Queries) GetAllUsers(ctx context.Context, githubID int32) ([]User, erro
 }
 
 const getUserByGithubID = `-- name: GetUserByGithubID :one
-SELECT users.id, users.created_at, users.updated_at, users.github_created_at, users.access_token, users.name, users.username, users.github_id, users.email, users.followers, users.following, users.bio, users.title, users.description, users.avatar_url, users.location,
+SELECT users.id, users.created_at, users.updated_at, users.github_created_at, users.access_token, users.name, users.username, users.github_id, users.github_url, users.linkedin_url, users.twitter_url, users.email, users.followers, users.following, users.bio, users.title, users.description, users.avatar_url, users.location,
     COUNT(repos.*) AS repos,
     COALESCE(SUM(repos.star_gazers), 0) AS stars,
     COALESCE(SUM(repos.watchers), 0) AS watchers
@@ -143,6 +146,9 @@ type GetUserByGithubIDRow struct {
 	Name            string
 	Username        string
 	GithubID        int32
+	GithubUrl       string
+	LinkedinUrl     string
+	TwitterUrl      string
 	Email           string
 	Followers       int32
 	Following       int32
@@ -168,6 +174,9 @@ func (q *Queries) GetUserByGithubID(ctx context.Context, githubID int32) (GetUse
 		&i.Name,
 		&i.Username,
 		&i.GithubID,
+		&i.GithubUrl,
+		&i.LinkedinUrl,
+		&i.TwitterUrl,
 		&i.Email,
 		&i.Followers,
 		&i.Following,
@@ -189,17 +198,21 @@ SET name = $1,
     email = $2,
     bio = $3,
     title = $4,
+    linkedin_url = $5,
+    twitter_url = $6,
     updated_at = CURRENT_TIMESTAMP
-WHERE github_id = $5
-RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, description, avatar_url, location
+WHERE github_id = $7
+RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, github_url, linkedin_url, twitter_url, email, followers, following, bio, title, description, avatar_url, location
 `
 
 type UpdateUserInfoParams struct {
-	Name     string
-	Email    string
-	Bio      string
-	Title    string
-	GithubID int32
+	Name        string
+	Email       string
+	Bio         string
+	Title       string
+	LinkedinUrl string
+	TwitterUrl  string
+	GithubID    int32
 }
 
 func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) (User, error) {
@@ -208,6 +221,8 @@ func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) 
 		arg.Email,
 		arg.Bio,
 		arg.Title,
+		arg.LinkedinUrl,
+		arg.TwitterUrl,
 		arg.GithubID,
 	)
 	var i User
@@ -220,6 +235,9 @@ func (q *Queries) UpdateUserInfo(ctx context.Context, arg UpdateUserInfoParams) 
 		&i.Name,
 		&i.Username,
 		&i.GithubID,
+		&i.GithubUrl,
+		&i.LinkedinUrl,
+		&i.TwitterUrl,
 		&i.Email,
 		&i.Followers,
 		&i.Following,
@@ -237,7 +255,7 @@ UPDATE users
 SET access_token = $1,
     updated_at = CURRENT_TIMESTAMP
 WHERE github_id = $2
-RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, email, followers, following, bio, title, description, avatar_url, location
+RETURNING id, created_at, updated_at, github_created_at, access_token, name, username, github_id, github_url, linkedin_url, twitter_url, email, followers, following, bio, title, description, avatar_url, location
 `
 
 type UpdateUserTokenParams struct {
@@ -257,6 +275,9 @@ func (q *Queries) UpdateUserToken(ctx context.Context, arg UpdateUserTokenParams
 		&i.Name,
 		&i.Username,
 		&i.GithubID,
+		&i.GithubUrl,
+		&i.LinkedinUrl,
+		&i.TwitterUrl,
 		&i.Email,
 		&i.Followers,
 		&i.Following,

@@ -55,10 +55,12 @@ func (cfg *apiConfig) handlerUsersGet(w http.ResponseWriter, r *http.Request) {
 
 func (cfg *apiConfig) handlerUsersUpdate(w http.ResponseWriter, r *http.Request, user *database.User) {
 	type parameters struct {
-		Name  string `json:"name"`
-		Email string `json:"email"`
-		Bio   string `json:"bio"`
-		Title string `jsons:"title"`
+		Name        string `json:"name"`
+		Email       string `json:"email"`
+		Bio         string `json:"bio"`
+		Title       string `json:"title"`
+		LinkedInUrl string `json:"linkedin"`
+		TwiiterUrl  string `json:"twitter"`
 	}
 	params := parameters{}
 	err := json.NewDecoder(r.Body).Decode(&params)
@@ -67,11 +69,13 @@ func (cfg *apiConfig) handlerUsersUpdate(w http.ResponseWriter, r *http.Request,
 		return
 	}
 	dbUser, err := cfg.DB.UpdateUserInfo(r.Context(), database.UpdateUserInfoParams{
-		Name:     params.Name,
-		Email:    params.Email,
-		Bio:      params.Bio,
-		Title:    params.Title,
-		GithubID: user.GithubID,
+		Name:        params.Name,
+		Email:       params.Email,
+		Bio:         params.Bio,
+		Title:       params.Title,
+		LinkedinUrl: params.LinkedInUrl,
+		TwitterUrl:  params.TwiiterUrl,
+		GithubID:    user.GithubID,
 	})
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error updating user info in database")

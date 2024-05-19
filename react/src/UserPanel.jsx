@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
 import UserLinguistics from "./UserLinguistics";
 import { GrLocation } from "react-icons/gr";
+import SocialLinks from "./SocialLinks";
 
 export default function UserPanel({panelUser}) {
     const {user} = useContext(AuthContext)
@@ -23,7 +24,7 @@ export default function UserPanel({panelUser}) {
     
     return (
         panelUser &&
-        <div className="ml-3 min-w-80">
+        <div className="flex flex-col items-start ml-3 min-w-80">
             <div className="flex mb-3">
                 <Avatar src={panelUser.AvatarUrl} size="50px" />
                 <div className="ml-3">
@@ -36,6 +37,7 @@ export default function UserPanel({panelUser}) {
                     </div>
                     }                   
                 </div>
+                <SocialLinks user={panelUser} />
             </div>
             <UserLinguistics className="mx-4" githubID={panelUser.GithubID} />
             <AuthedBtn onClick={() => postCollab()} text="Collab" />

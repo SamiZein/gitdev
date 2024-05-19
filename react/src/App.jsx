@@ -9,7 +9,7 @@ import Profile from './Profile.jsx';
 
 function App() {
   return (
-    <main className="h-screen text-dark-text bg-dark-bg-secondary">
+    <main className="h-screen overflow-y-auto text-dark-text bg-dark-bg-secondary">
       <BrowserRouter >
         <Header />
           <Routes >
