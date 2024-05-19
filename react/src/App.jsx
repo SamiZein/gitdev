@@ -10,14 +10,14 @@ import Profile from './Profile.jsx';
 function App() {
   return (
     <main className="h-screen overflow-y-auto text-dark-text bg-dark-bg-secondary">
-      <BrowserRouter >
+      <BrowserRouter>
         <Header />
-          <Routes >
-            <Route path="/" element={<Users />}/>
-            <Route path="/collabs" element={<Collabs />}/>
-            <Route path="/profile" element={<Profile />}/>
-            <Route path="/callback" element={<GithubCallback />}/>
-          </Routes>
+        <Routes>
+          <Route path="/" element={<Users />}/>
+          <Route path="/collabs" element={<Collabs />}/>
+          <Route path="/profile" element={<Profile />}/>
+          <Route path="/callback" element={<GithubCallback />}/>
+        </Routes>
       </BrowserRouter>
     </main>
   )

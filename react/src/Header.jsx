@@ -24,7 +24,7 @@ export default function Header() {
           </div>
           <div>
             {isLoggedIn 
-            ? (<Avatar onClick={toggleIsSettingsOpen} src={user.AvatarUrl} size="30px" />)
+            ? (<Avatar onClick={toggleIsSettingsOpen} src={user.AvatarUrl} className="size-8" />)
             : (<AuthedBtn onClick={handleLogin} text="Sign in" />)
             }
           </div>

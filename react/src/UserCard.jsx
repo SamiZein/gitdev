@@ -28,7 +28,7 @@ export default function UserCard({ user, onClick }) {
             <div className="flex items-center">
                 <Avatar 
                     src={user.AvatarUrl}
-                    size="30px"
+                    className="size-8"
                 />
                 <div className="ml-2">
                     <h1 className="-mb-1.5 text-xl font-semibold">{user.Title}</h1>

@@ -24,9 +24,9 @@ export default function UserPanel({panelUser}) {
     
     return (
         panelUser &&
-        <div className="flex flex-col items-start ml-3 min-w-80">
+        <div className="h-full ml-4 min-w-80">
             <div className="flex mb-3">
-                <Avatar src={panelUser.AvatarUrl} size="50px" />
+                <Avatar src={panelUser.AvatarUrl} className="size-12" />
                 <div className="ml-3">
                     <h1 className="-mb-2 text-xl">{panelUser.Username}</h1>
                     <h2 className="ml-2">{panelUser.Title}</h2>
@@ -44,8 +44,9 @@ export default function UserPanel({panelUser}) {
             <p className="m-2 text-base/loose">
                 {panelUser.Bio}
             </p>
+            
             <GithubStats 
-                className="mt-auto"
+                className="justify-center my-5"
                 user={panelUser} 
             />
         </div>

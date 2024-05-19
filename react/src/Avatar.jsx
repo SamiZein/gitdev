@@ -1,21 +1,13 @@
 
 
-export default function Avatar({ src, size, onClick }) {
-    const avatarStyle = {
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        objectFit: 'cover',
-      };
+export default function Avatar({ src, onClick, className }) {
     
       return (
-        <div onClick={onClick}>
+        <div className={`${className} min-w-10 min-h-10 rounded-full overflow-hidden`} onClick={onClick}>
           <img
             src={src}
             alt="https://github.com/shadcn.png"
-            style={avatarStyle}
           />
         </div>
- 
       );
 };

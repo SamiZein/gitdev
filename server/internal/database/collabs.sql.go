@@ -55,7 +55,19 @@ SELECT CASE
     CASE
         WHEN collabs.user1_github_id = $1 THEN user2.title
         ELSE user1.title
-    END AS title
+    END AS title,
+    CASE
+        WHEN collabs.user1_github_id = $1 THEN user2.github_url
+        ELSE user1.github_url
+    END AS github_url,
+    CASE
+        WHEN collabs.user1_github_id = $1 THEN user2.linkedin_url
+        ELSE user1.linkedin_url
+    END AS linkedin_url,
+    CASE
+        WHEN collabs.user1_github_id = $1 THEN user2.twitter_url
+        ELSE user1.twitter_url
+    END AS twitter_url
 FROM collabs
     JOIN users AS user1 ON collabs.user1_github_id = user1.github_id
     JOIN users AS user2 ON collabs.user2_github_id = user2.github_id
@@ -66,11 +78,14 @@ WHERE (
 `
 
 type GetUsersCollabsRow struct {
-	AvatarUrl interface{}
-	Email     interface{}
-	Username  interface{}
-	Location  interface{}
-	Title     interface{}
+	AvatarUrl   interface{}
+	Email       interface{}
+	Username    interface{}
+	Location    interface{}
+	Title       interface{}
+	GithubUrl   interface{}
+	LinkedinUrl interface{}
+	TwitterUrl  interface{}
 }
 
 func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]GetUsersCollabsRow, error) {
@@ -88,6 +103,9 @@ func (q *Queries) GetUsersCollabs(ctx context.Context, user1GithubID int32) ([]G
 			&i.Username,
 			&i.Location,
 			&i.Title,
+			&i.GithubUrl,
+			&i.LinkedinUrl,
+			&i.TwitterUrl,
 		); err != nil {
 			return nil, err
 		}
