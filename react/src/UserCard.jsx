@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import { GrLocation } from "react-icons/gr";
 
-export default function UserCard({ user, onClick }) {
+export default function UserCard({ user, onClick, isSelected }) {
     const [userActivity, setUserActivity] = useState("")
     const daysSince = (timestamp) => {
         const truncatedTimestamp = timestamp.split('.')[0];

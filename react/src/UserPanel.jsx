@@ -24,7 +24,7 @@ export default function UserPanel({panelUser}) {
     
     return (
         panelUser &&
-        <div className="h-full ml-4 min-w-80">
+        <div className="h-full max-w-lg ml-4 min-w-sm">
             <div className="flex mb-3">
                 <Avatar src={panelUser.AvatarUrl} className="size-12" />
                 <div className="ml-3">
@@ -37,7 +37,7 @@ export default function UserPanel({panelUser}) {
                     </div>
                     }                   
                 </div>
-                <SocialLinks user={panelUser} />
+                <SocialLinks className="ml-auto mr-3" user={panelUser} />
             </div>
             <UserLinguistics className="mx-4" githubID={panelUser.GithubID} />
             <AuthedBtn onClick={() => postCollab()} text="Collab" />

@@ -64,7 +64,7 @@ export default function Users() {
       </div>
       <div className="flex h-full">
         <div id="users-section"
-          className=" min-w-80"
+          className=" min-w-80 max-w-120"
         >
           {users?.length
           ?  users.map((user) => 
