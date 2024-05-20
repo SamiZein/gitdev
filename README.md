@@ -1,22 +1,23 @@
 # Gitdev
 
-Gitdev is a developer collaboration website. It takes a developer-first approach for times when githubs' project-first approach may not be suitable. By requiring a github sign-in, Gitdev is able to display a users' github information in a way that is unique to the site, allowing for better assessment of potential collaborators. Try it out yourself and see you own user language breakdown!
+Gitdev is a developer collaboration website. It takes a developer-first approach for times when githubs' project-first approach may not be suitable. By requiring a github sign-in, Gitdev is able to streamline account creation and secure authentication while also leveraging their API to provide a comprehensive representation of a potential collaborators information, offering insight otherwise not readily available. Try it out yourself and see you own user language breakdown!
 
 ![screenshot](users_page.png)
 
 ##Why
 
 - Why is a project-first approach the only popular option for developer collaboration
-- Why don't developer collaboration apps integrate github user info and build better visual representations of a developers proficiencies
+- Why don't GitHub integrate user info and build better visual representations of a developers proficiencies
 - Why do developers that want to team up in game jams and coding competitions not have a reasonable option
+
 
 ## Features
 
 - Sign in with GitHub
 - Automatic profile population based on GitHub data
 - Developers page shows new potential collaborators in a job board format
-  - Linguistics bar shows the distribution of programming languages used
-- Collabs page shows the user all their collabs
+  - Linguistics bar shows a users language distribution at an account level as oppose to the repository level that GitHub offers
+- Collabs page shows the user all their collabs, including contact info otherwise inaccessible
 - Profile page shows the user their own info and allows them to update it
 
 ## Technologies Used
