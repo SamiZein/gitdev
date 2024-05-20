@@ -56,4 +56,9 @@ cd react && npm install && npm run dev && cd ..
 cd server && go build -o out && ./out && cd ..
 ```
 
-4. Submit a pull request
+4. Setup PostgreSQL database and then use goose to migrate it to the current version (replace sami with your info)
+```bash
+cd server/sql/schema && goose postgres postgres://sami:@localhost:5432/gitdev up
+```
+
+5. Update codebase and submit a pull request
