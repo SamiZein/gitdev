@@ -4,12 +4,11 @@ Gitdev is a developer collaboration website. It takes a developer-first approach
 
 ![screenshot](users_page.png)
 
-##Why
+# Why
 
 - Why is a project-first approach the only popular option for developer collaboration
 - Why don't GitHub integrate user info and build better visual representations of a developers proficiencies
 - Why do developers that want to team up in game jams and coding competitions not have a reasonable option
-
 
 ## Features
 
@@ -58,6 +57,7 @@ cd server && go build -o out && ./out && cd ..
 ```
 
 4. Setup PostgreSQL database and then use goose to migrate it to the current version (replace sami with your info)
+
 ```bash
 cd server/sql/schema && goose postgres postgres://sami:@localhost:5432/gitdev up
 ```
