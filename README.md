@@ -1,6 +1,6 @@
-# Gitdev
+# GitDev
 
-Gitdev is a developer collaboration website. It takes a developer-first approach for times when githubs' project-first approach may not be suitable. By requiring a github sign-in, Gitdev is able to streamline account creation and secure authentication while also leveraging their API to provide a comprehensive representation of a potential collaborators information, offering insight otherwise not readily available. Try it out yourself and see you own user language breakdown!
+GitDev is a developer collaboration website. It takes a developer-first approach for times when githubs' project-first approach may not be suitable such as game jams and coding competitions. The idea is to initally connect here and continue collaborating elsewhere like GitHub and Discord. By requiring a github sign-in, GitDev is able to streamline account creation and secure authentication while also leveraging their API to provide a comprehensive representation of a potential collaborators information, offering insight otherwise not readily available including an account level linguistics bar. Try it out yourself and see you own user language breakdown!
 
 ![screenshot](users_page.png)
 
